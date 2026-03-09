@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access - Blueladder Infrastructure</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .method {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+        }
+        .method h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        .method p {
+            margin: 0 0 1rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        .note {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏗️ Blueladder Infrastructure</div>
+        <div class="subtitle">Admin Portal Access</div>
+        
+        <div class="methods">
+            <div class="method">
+                <h3>Method 1: Admin Login Form</h3>
+                <p>Use the professional login form with username and password</p>
+                <a href="/admin-login" class="btn">Go to Login Form</a>
+            </div>
+            
+            <div class="method">
+                <h3>Method 2: Quick Development Login</h3>
+                <p>Skip the form and login directly (development only)</p>
+                <button class="btn btn-secondary" onclick="quickLogin()">Quick Login</button>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>Default Credentials:</strong><br>
+            Username: <code>admin</code> | Password: <code>admin123</code><br>
+            <small>Additional usernames: administrator, blueladder</small>
+        </div>
+    </div>
+
+    <script>
+        function quickLogin() {
+            // Force a complete page reload to bypass client-side routing
+            window.location.assign('/api/auth/dev-login');
+        }
+    </script>
+</body>
+</html>

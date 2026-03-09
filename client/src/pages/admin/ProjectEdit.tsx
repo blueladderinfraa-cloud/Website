@@ -1,0 +1,501 @@
+import { useState, useEffect } from "react";
+import { Link, useParams, useLocation } from "wouter";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  Save,
+  Plus,
+  Trash2,
+  Image,
+  FileText,
+  Calendar,
+  Upload,
+} from "lucide-react";
+
+export default function AdminProjectEdit() {
+  const { id } = useParams<{ id: string }>();
+  const [, navigate] = useLocation();
+  const { user, isAuthenticated, loading } = useAuth();
+  const projectId = parseInt(id || "0");
+  const isNew = !projectId;
+
+  const [formData, setFormData] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    location: "",
+    category: "residential" as "residential" | "commercial" | "industrial" | "infrastructure",
+    status: "upcoming" as "upcoming" | "ongoing" | "completed",
+    coverImage: "",
+    beforeImage: "",
+    afterImage: "",
+    client: "",
+    area: "",
+    progress: "0",
+    featured: false,
+    startDate: "",
+    endDate: "",
+  });
+
+  const [phases, setPhases] = useState<any[]>([]);
+  const [images, setImages] = useState<any[]>([]);
+
+  const utils = trpc.useUtils();
+  const { data: project, isLoading } = trpc.projects.getById.useQuery(
+    { id: projectId },
+    { enabled: !!projectId }
+  );
+
+  const createProject = trpc.projects.create.useMutation({
+    onSuccess: (data) => {
+      toast.success("Project created successfully!");
+      navigate(`/admin/projects/${data.id}`);
+    },
+    onError: (error) => {
+      toast.error("Failed to create project");
+      console.error(error);
+    },
+  });
+
+  const updateProject = trpc.projects.update.useMutation({
+    onSuccess: () => {
+      toast.success("Project updated successfully!");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to update project");
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    if (project) {
+      setFormData({
+        title: project.title,
+        slug: project.slug,
+        description: project.description || "",
+        location: project.location || "",
+        category: project.category as "residential" | "commercial" | "industrial" | "infrastructure",
+        status: project.status as "upcoming" | "ongoing" | "completed",
+        coverImage: project.coverImage || "",
+        beforeImage: project.beforeImage || "",
+        afterImage: project.afterImage || "",
+        client: project.clientName || "",
+        area: project.sqftBuilt?.toString() || "",
+        progress: project.progress?.toString() || "0",
+        featured: project.featured || false,
+        startDate: project.startDate ? new Date(project.startDate).toISOString().split("T")[0] : "",
+        endDate: project.endDate ? new Date(project.endDate).toISOString().split("T")[0] : "",
+      });
+      setPhases(project.phases || []);
+      setImages(project.images || []);
+    }
+  }, [project]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = {
+      ...formData,
+      area: formData.area ? parseInt(formData.area) : undefined,
+      progress: formData.progress ? parseInt(formData.progress) : 0,
+      startDate: formData.startDate ? new Date(formData.startDate) : undefined,
+      endDate: formData.endDate ? new Date(formData.endDate) : undefined,
+    };
+
+    if (isNew) {
+      createProject.mutate(data);
+    } else {
+      updateProject.mutate({ id: projectId, ...data });
+    }
+  };
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
+  if (loading || isLoading) {
+    return (
+      <div className="min-h-screen bg-secondary/30 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || user?.role !== "admin") {
+    window.location.href = getLoginUrl();
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-secondary/30">
+      {/* Header */}
+      <header className="bg-white border-b sticky top-0 z-50">
+        <div className="container py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href="/admin/projects">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+              </Link>
+              <span className="font-semibold text-foreground">
+                {isNew ? "New Project" : `Edit: ${project?.title}`}
+              </span>
+            </div>
+            <Button
+              onClick={handleSubmit}
+              className="gradient-primary text-white"
+              disabled={createProject.isPending || updateProject.isPending}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {isNew ? "Create" : "Save"} Project
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container py-8">
+        <Tabs defaultValue="details" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="images">Images</TabsTrigger>
+            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="details">
+            <form onSubmit={handleSubmit}>
+              <div className="grid lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-6">
+                  <Card className="border-0 shadow-elegant">
+                    <CardHeader>
+                      <CardTitle>Basic Information</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Title *</Label>
+                          <Input
+                            value={formData.title}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                title: e.target.value,
+                                slug: isNew ? generateSlug(e.target.value) : formData.slug,
+                              });
+                            }}
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Slug *</Label>
+                          <Input
+                            value={formData.slug}
+                            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Description</Label>
+                        <Textarea
+                          value={formData.description}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          rows={4}
+                        />
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Location</Label>
+                          <Input
+                            value={formData.location}
+                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Client</Label>
+                          <Input
+                            value={formData.client}
+                            onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label>Category</Label>
+                          <Select
+                            value={formData.category}
+                            onValueChange={(value: any) => setFormData({ ...formData, category: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="residential">Residential</SelectItem>
+                              <SelectItem value="commercial">Commercial</SelectItem>
+                              <SelectItem value="industrial">Industrial</SelectItem>
+                              <SelectItem value="infrastructure">Infrastructure</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Status</Label>
+                          <Select
+                            value={formData.status}
+                            onValueChange={(value: any) => setFormData({ ...formData, status: value })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="upcoming">Upcoming</SelectItem>
+                              <SelectItem value="ongoing">Ongoing</SelectItem>
+                              <SelectItem value="completed">Completed</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Area (sq ft)</Label>
+                          <Input
+                            type="number"
+                            value={formData.area}
+                            onChange={(e) => setFormData({ ...formData, area: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label>Start Date</Label>
+                          <Input
+                            type="date"
+                            value={formData.startDate}
+                            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>End Date</Label>
+                          <Input
+                            type="date"
+                            value={formData.endDate}
+                            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Progress (%)</Label>
+                          <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={formData.progress}
+                            onChange={(e) => setFormData({ ...formData, progress: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="space-y-6">
+                  <Card className="border-0 shadow-elegant">
+                    <CardHeader>
+                      <CardTitle>Cover Image</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {formData.coverImage ? (
+                        <div className="relative rounded-lg overflow-hidden">
+                          <img
+                            src={formData.coverImage}
+                            alt="Cover"
+                            className="w-full h-40 object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={() => setFormData({ ...formData, coverImage: "" })}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="h-40 border-2 border-dashed rounded-lg flex items-center justify-center">
+                          <div className="text-center text-muted-foreground">
+                            <Image className="w-8 h-8 mx-auto mb-2" />
+                            <p className="text-sm">No cover image</p>
+                          </div>
+                        </div>
+                      )}
+                      <Input
+                        placeholder="Image URL"
+                        value={formData.coverImage}
+                        onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                      />
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-0 shadow-elegant">
+                    <CardHeader>
+                      <CardTitle>Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <Label>Featured Project</Label>
+                        <Switch
+                          checked={formData.featured}
+                          onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="images">
+            <Card className="border-0 shadow-elegant">
+              <CardHeader>
+                <CardTitle>Before & After Images</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Before Image URL</Label>
+                    <Input
+                      value={formData.beforeImage}
+                      onChange={(e) => setFormData({ ...formData, beforeImage: e.target.value })}
+                      placeholder="https://..."
+                    />
+                    {formData.beforeImage && (
+                      <img
+                        src={formData.beforeImage}
+                        alt="Before"
+                        className="w-full h-40 object-cover rounded-lg mt-2"
+                      />
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>After Image URL</Label>
+                    <Input
+                      value={formData.afterImage}
+                      onChange={(e) => setFormData({ ...formData, afterImage: e.target.value })}
+                      placeholder="https://..."
+                    />
+                    {formData.afterImage && (
+                      <img
+                        src={formData.afterImage}
+                        alt="After"
+                        className="w-full h-40 object-cover rounded-lg mt-2"
+                      />
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-elegant mt-6">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Gallery Images</CardTitle>
+                <Button variant="outline" size="sm" disabled>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Image
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {images.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {images.map((img: any) => (
+                      <div key={img.id} className="relative rounded-lg overflow-hidden group">
+                        <img
+                          src={img.imageUrl}
+                          alt={img.caption || "Gallery image"}
+                          className="w-full h-32 object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Button variant="destructive" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Image className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No gallery images yet</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="timeline">
+            <Card className="border-0 shadow-elegant">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Project Phases</CardTitle>
+                <Button variant="outline" size="sm" disabled>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Phase
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {phases.length > 0 ? (
+                  <div className="space-y-4">
+                    {phases.map((phase: any, index: number) => (
+                      <div key={phase.id} className="p-4 bg-secondary/50 rounded-lg">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-foreground">{phase.name}</h4>
+                            <p className="text-sm text-muted-foreground">{phase.description}</p>
+                          </div>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            phase.status === "completed" ? "bg-green-100 text-green-700" :
+                            phase.status === "in_progress" ? "bg-blue-100 text-blue-700" :
+                            "bg-muted text-muted-foreground"
+                          }`}>
+                            {phase.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No phases defined yet</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+}
