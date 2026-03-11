@@ -33,8 +33,8 @@ export function useAuthGuard(options: AuthGuardOptions = {}) {
       return;
     }
 
-    // Check authorization
-    if (user?.role !== requiredRole) {
+    // Check authorization (admins can access any route)
+    if (user?.role !== requiredRole && user?.role !== 'admin') {
       const error = new Error(`Access denied. Required role: ${requiredRole}, current role: ${user?.role || 'none'}`);
       if (onAuthFail) {
         onAuthFail();
@@ -45,7 +45,7 @@ export function useAuthGuard(options: AuthGuardOptions = {}) {
     }
   }, [user, isAuthenticated, loading, requiredRole, redirectOnFail, onAuthFail, handleAuthError]);
 
-  const hasAccess = isAuthenticated && user?.role === requiredRole;
+  const hasAccess = isAuthenticated && (user?.role === requiredRole || user?.role === 'admin');
 
   return {
     user,

@@ -60,7 +60,7 @@ export default function ClientProjectDetail() {
   }
 
   if (!isAuthenticated || user?.role !== "client") {
-    window.location.href = getLoginUrl();
+    navigate(getLoginUrl());
     return null;
   }
 

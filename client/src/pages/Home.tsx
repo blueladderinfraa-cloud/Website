@@ -28,11 +28,11 @@ function useCountUp(end: number, duration: number = 2000, start: boolean = false
   useEffect(() => {
     if (!start) return;
     
-    let startTime: number;
+    let startTime: number | null = null;
     let animationFrame: number;
-    
+
     const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
+      if (startTime === null) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
       setCount(Math.floor(progress * end));
       

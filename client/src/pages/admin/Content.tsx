@@ -48,7 +48,13 @@ export default function AdminContent() {
       console.log("Save success - data:", data, "variables:", variables); // Debug log
       
       // Immediately update local state with the saved data
-      const savedData = JSON.parse(variables.value || '{}');
+      let savedData;
+      try {
+        savedData = JSON.parse(variables.value || '{}');
+      } catch {
+        toast.error("Invalid data format");
+        return;
+      }
       const updatedContent = { ...content };
       
       // Update local state based on section

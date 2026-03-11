@@ -153,41 +153,41 @@ export default function ClientPortal() {
             <div className="space-y-8">
               <h2 className="text-xl font-semibold text-foreground">Your Projects</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {clientProjects.map((cp: any) => (
-                  <Link key={cp.id} href={`/client/project/${cp.project.id}`}>
+                {clientProjects.map((project: any) => (
+                  <Link key={project.id} href={`/client/project/${project.id}`}>
                     <Card className="border-0 shadow-elegant hover-lift cursor-pointer h-full">
                       <div className="relative h-40 overflow-hidden rounded-t-lg">
                         <img
-                          src={cp.project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=300&fit=crop"}
-                          alt={cp.project.title}
+                          src={project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=300&fit=crop"}
+                          alt={project.title}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute top-3 right-3">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            cp.project.status === "completed" ? "bg-green-500/90 text-white" :
-                            cp.project.status === "ongoing" ? "bg-accent/90 text-accent-foreground" :
+                            project.status === "completed" ? "bg-green-500/90 text-white" :
+                            project.status === "ongoing" ? "bg-accent/90 text-accent-foreground" :
                             "bg-primary/90 text-white"
                           }`}>
-                            {cp.project.status.charAt(0).toUpperCase() + cp.project.status.slice(1)}
+                            {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
                           </span>
                         </div>
                       </div>
                       <CardContent className="p-5">
                         <h3 className="font-semibold text-lg text-foreground mb-2">
-                          {cp.project.title}
+                          {project.title}
                         </h3>
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                          {cp.project.description || "Your construction project"}
+                          {project.description || "Your construction project"}
                         </p>
-                        
+
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Progress</span>
                             <span className="font-medium text-foreground">
-                              {cp.project.progress || 0}%
+                              {project.progress || 0}%
                             </span>
                           </div>
-                          <Progress value={cp.project.progress || 0} className="h-2" />
+                          <Progress value={project.progress || 0} className="h-2" />
                         </div>
                       </CardContent>
                     </Card>

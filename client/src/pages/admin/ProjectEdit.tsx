@@ -142,7 +142,7 @@ export default function AdminProjectEdit() {
   }
 
   if (!isAuthenticated || user?.role !== "admin") {
-    window.location.href = getLoginUrl();
+    navigate(getLoginUrl());
     return null;
   }
 
@@ -312,7 +312,10 @@ export default function AdminProjectEdit() {
                             min="0"
                             max="100"
                             value={formData.progress}
-                            onChange={(e) => setFormData({ ...formData, progress: e.target.value })}
+                            onChange={(e) => {
+                              const val = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
+                              setFormData({ ...formData, progress: val.toString() });
+                            }}
                           />
                         </div>
                       </div>

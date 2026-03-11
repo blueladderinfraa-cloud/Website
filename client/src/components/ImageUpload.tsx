@@ -59,7 +59,13 @@ export function ImageUpload({
     // Convert file to base64
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
+      const parts = (reader.result as string).split(",");
+      const base64 = parts.length > 1 ? parts[1] : null;
+      if (!base64) {
+        toast.error("Invalid file format");
+        setIsUploading(false);
+        return;
+      }
       uploadMutation.mutate({
         base64,
         filename: file.name,
@@ -240,7 +246,13 @@ export function ImageUploadInline({
 
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
+      const parts = (reader.result as string).split(",");
+      const base64 = parts.length > 1 ? parts[1] : null;
+      if (!base64) {
+        toast.error("Invalid file format");
+        setIsUploading(false);
+        return;
+      }
       uploadMutation.mutate({
         base64,
         filename: file.name,
