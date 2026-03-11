@@ -6,9 +6,15 @@ export const getLoginUrl = () => {
   if (import.meta.env.DEV) {
     return '/admin-login';
   }
-  
+
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
+
+  // Fallback to admin login if OAuth is not configured
+  if (!oauthPortalUrl || !appId) {
+    return '/admin-login';
+  }
+
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
   const state = btoa(redirectUri);
 
