@@ -189,19 +189,19 @@ export default function Navbar() {
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[85vw] max-w-80 p-6" style={{ backgroundColor: "#ffffff" }}>
+            <SheetContent side="right" className="w-[85vw] max-w-80 p-6 border-l-0 text-white" style={{ backgroundColor: "#0a1628" }}>
               <div className="flex flex-col gap-6 mt-8">
                 {/* Mobile Contact Info */}
                 {contactContent.phone1 && (
                   <a
                     href={`tel:${contactContent.phone1.replace(/\D/g, '')}`}
-                    className="flex items-center gap-2 text-lg font-medium text-foreground hover:text-primary"
+                    className="flex items-center gap-2 text-lg font-medium text-white/90 hover:text-white"
                   >
                     <Phone className="w-5 h-5" />
                     <span>{contactContent.phone1}</span>
                   </a>
                 )}
-                
+
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -209,33 +209,33 @@ export default function Navbar() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`text-lg font-medium ${
                       isActive(link.href)
-                        ? "text-primary"
-                        : "text-foreground hover:text-primary"
+                        ? "text-amber-400"
+                        : "text-white hover:text-amber-400"
                     }`}
                   >
                     {link.label}
                   </Link>
                 ))}
-                <hr className="border-border" />
+                <hr className="border-white/20" />
                 <div className="mobile-admin-section">
                   {isAuthenticated ? (
                     <>
-                      <div className="mobile-admin-info">
+                      <div className="mobile-admin-info text-white/70 text-sm mb-2">
                         👤 Logged in as: {user?.name || user?.email || "Admin"}
                       </div>
                       {getPortalLink() && (
                         <Link
                           href={getPortalLink()!}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-primary hover:text-primary/80 bg-primary/10 px-4 py-3 rounded-lg mb-3"
+                          className="block text-lg font-medium text-amber-400 hover:text-amber-300 bg-white/10 px-4 py-3 rounded-lg mb-3"
                         >
                           🏗️ Admin Dashboard
                         </Link>
                       )}
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         onClick={() => logout()}
-                        className="w-full bg-white text-primary border-primary/20 hover:bg-primary/5"
+                        className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20"
                       >
                         🚪 Logout
                       </Button>
@@ -243,7 +243,7 @@ export default function Navbar() {
                   ) : (
                     <Button
                       variant="outline"
-                      className="w-full bg-white text-primary border-primary/20 hover:bg-primary/5"
+                      className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20"
                       onClick={() => (window.location.href = getLoginUrl())}
                     >
                       🔐 Admin Login
