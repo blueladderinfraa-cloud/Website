@@ -130,7 +130,7 @@ export default function CostEstimator() {
                   {/* Construction Type */}
                   <div className="space-y-4 mb-8">
                     <Label className="text-base font-semibold">Construction Type</Label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {constructionTypes.map((type) => (
                         <button
                           key={type.value}
@@ -255,7 +255,7 @@ export default function CostEstimator() {
                   <h2 className="text-xl font-bold mb-6">Estimated Project Cost</h2>
                   
                   <div className="text-center py-8">
-                    <div className="text-4xl md:text-5xl font-bold mb-2">
+                    <div className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 break-words">
                       {formatCurrency(estimate.total)}
                     </div>
                     <div className="text-white/80">

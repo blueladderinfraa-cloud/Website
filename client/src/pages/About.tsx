@@ -139,7 +139,7 @@ export default function About() {
               <img
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop"
                 alt="Team at work"
-                className="rounded-xl shadow-elegant w-full h-48 object-cover mt-8"
+                className="rounded-xl shadow-elegant w-full h-48 object-cover md:mt-8"
               />
               <img
                 src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop"
@@ -149,7 +149,7 @@ export default function About() {
               <img
                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
                 alt="Modern construction"
-                className="rounded-xl shadow-elegant w-full h-48 object-cover mt-8"
+                className="rounded-xl shadow-elegant w-full h-48 object-cover md:mt-8"
               />
             </div>
           </div>
@@ -231,9 +231,9 @@ export default function About() {
             <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/20 hidden md:block" />
             <div className="space-y-8">
               {milestones.map((milestone, index) => (
-                <div key={milestone.year} className={`flex items-center gap-8 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                <div key={milestone.year} className={`flex flex-col md:flex-row md:items-center gap-4 md:gap-8 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 inline-block">
+                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 block md:inline-block">
                       <span className="text-white font-bold text-2xl">{milestone.year}</span>
                       <h3 className="font-semibold text-white text-lg mt-2">{milestone.title}</h3>
                       <p className="text-white/70 text-sm mt-1">{milestone.description}</p>

@@ -233,7 +233,7 @@ export default function Home() {
                   className="w-full h-[400px] object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 bg-accent text-accent-foreground p-6 rounded-xl shadow-elegant-lg">
+              <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 bg-accent text-accent-foreground p-4 md:p-6 rounded-xl shadow-elegant-lg">
                 <div className="text-3xl font-bold">18+</div>
                 <div className="text-sm">Years Experience</div>
               </div>
@@ -253,7 +253,7 @@ export default function Home() {
                 </p>
               )}
               
-              <div className="grid grid-cols-2 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 {whyChooseUs.map((item) => (
                   <div key={item.title} className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -336,7 +336,7 @@ export default function Home() {
           />
         </div>
         <div className="container relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {displayStats.map((stat: any) => (
               <StatCounter
                 key={stat.key}

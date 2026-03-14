@@ -182,7 +182,7 @@ export default function SubcontractorPortal() {
                             {tender.description}
                           </p>
                           
-                          <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-sm">
                             {tender.location && (
                               <div className="flex items-center gap-2 text-muted-foreground">
                                 <MapPin className="w-4 h-4" />
@@ -323,7 +323,7 @@ export default function SubcontractorPortal() {
 
                       <div className="space-y-2">
                         <Label>Specializations</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
                           {specializationOptions.map((spec) => (
                             <label
                               key={spec}
