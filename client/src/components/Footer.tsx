@@ -47,7 +47,8 @@ export default function Footer() {
                 <img
                   src={getLogoProps().src}
                   alt={getLogoProps().alt}
-                  className="h-10 object-contain max-w-[140px] logo-transparent logo-no-bg force-transparent dark-logo remove-white-filter"
+                  className="h-10 object-contain max-w-[140px]"
+                  style={{ filter: "brightness(0) invert(1)" }}
                   onError={(e) => {
                     // Fallback to icon if image fails to load
                     const target = e.target as HTMLImageElement;
