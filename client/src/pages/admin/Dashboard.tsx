@@ -65,7 +65,7 @@ export default function AdminDashboard() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link href="/admin/projects">
                   <Button variant="outline" className="w-full h-auto py-4 flex-col gap-2">
                     <Building2 className="w-6 h-6 text-primary" />

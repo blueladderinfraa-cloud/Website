@@ -146,18 +146,21 @@ export default function ClientProjectDetail() {
       <section className="py-8">
         <div className="container">
           <Tabs defaultValue="timeline" className="space-y-6">
-            <TabsList className="bg-white shadow-elegant">
-              <TabsTrigger value="timeline" className="gap-2">
+            <TabsList className="bg-white shadow-elegant w-full sm:w-auto flex-wrap">
+              <TabsTrigger value="timeline" className="gap-2 flex-1 sm:flex-none">
                 <Clock className="w-4 h-4" />
-                Timeline
+                <span className="hidden sm:inline">Timeline</span>
+                <span className="sm:hidden">Timeline</span>
               </TabsTrigger>
-              <TabsTrigger value="photos" className="gap-2">
+              <TabsTrigger value="photos" className="gap-2 flex-1 sm:flex-none">
                 <Image className="w-4 h-4" />
-                Daily Logs
+                <span className="hidden sm:inline">Daily Logs</span>
+                <span className="sm:hidden">Logs</span>
               </TabsTrigger>
-              <TabsTrigger value="documents" className="gap-2">
+              <TabsTrigger value="documents" className="gap-2 flex-1 sm:flex-none">
                 <FileText className="w-4 h-4" />
-                Documents
+                <span className="hidden sm:inline">Documents</span>
+                <span className="sm:hidden">Docs</span>
               </TabsTrigger>
             </TabsList>
 

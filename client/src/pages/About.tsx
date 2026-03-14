@@ -130,7 +130,7 @@ export default function About() {
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <img
                 src={aboutContent.image || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop"}
                 alt="Construction site"

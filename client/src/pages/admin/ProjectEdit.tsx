@@ -151,15 +151,15 @@ export default function AdminProjectEdit() {
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="container py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Link href="/admin/projects">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
               </Link>
-              <span className="font-semibold text-foreground">
+              <span className="font-semibold text-foreground truncate">
                 {isNew ? "New Project" : `Edit: ${project?.title}`}
               </span>
             </div>

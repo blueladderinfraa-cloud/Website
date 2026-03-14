@@ -71,7 +71,7 @@ function StatCounter({ value, suffix, label }: { value: number; suffix: string; 
   
   return (
     <div ref={ref} className="text-center">
-      <div className="text-4xl md:text-5xl font-bold text-accent mb-2">
+      <div className="text-3xl md:text-5xl font-bold text-accent mb-2">
         {count}{suffix}
       </div>
       <div className="text-white/80 text-sm uppercase tracking-wider">{label}</div>

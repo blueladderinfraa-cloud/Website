@@ -131,14 +131,16 @@ export default function SubcontractorPortal() {
       <section className="section-padding bg-secondary/30">
         <div className="container">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="bg-white shadow-elegant">
-              <TabsTrigger value="tenders" className="gap-2">
+            <TabsList className="bg-white shadow-elegant w-full sm:w-auto">
+              <TabsTrigger value="tenders" className="gap-2 flex-1 sm:flex-none">
                 <Briefcase className="w-4 h-4" />
-                Open Tenders
+                <span className="hidden sm:inline">Open Tenders</span>
+                <span className="sm:hidden">Tenders</span>
               </TabsTrigger>
-              <TabsTrigger value="apply" className="gap-2">
+              <TabsTrigger value="apply" className="gap-2 flex-1 sm:flex-none">
                 <FileText className="w-4 h-4" />
-                Apply as Subcontractor
+                <span className="hidden sm:inline">Apply as Subcontractor</span>
+                <span className="sm:hidden">Apply</span>
               </TabsTrigger>
             </TabsList>
 
