@@ -65,10 +65,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 logo-container">
             <img
-              src="/logo.svg"
+              src="/logo.jpg"
               alt="Blueladder Infra Logo"
-              className="h-12 object-contain"
-              style={isScrolled ? {} : { filter: "brightness(0) invert(1)" }}
+              className="h-12 w-12 object-cover rounded-lg"
             />
             <div className="flex flex-col">
               <span className={`font-bold text-xl leading-tight ${isScrolled ? "text-primary" : "text-white"}`}>

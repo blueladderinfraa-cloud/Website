@@ -43,10 +43,9 @@ export default function Footer() {
           <div className="space-y-6">
             <div className="flex items-center gap-3 logo-container">
               <img
-                src="/logo.svg"
+                src="/logo.jpg"
                 alt="Blueladder Infra Logo"
-                className="h-10 object-contain"
-                style={{ filter: "brightness(0) invert(1)" }}
+                className="h-10 w-10 object-cover rounded-lg"
               />
               <div className="flex flex-col">
                 <span className="font-bold text-xl leading-tight">
