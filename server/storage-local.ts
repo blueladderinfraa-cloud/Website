@@ -5,7 +5,9 @@ import { promises as fs } from "fs";
 import path from "path";
 import { nanoid } from "nanoid";
 
-const UPLOAD_DIR = path.join(process.cwd(), "client", "public", "uploads");
+const UPLOAD_DIR = process.env.NODE_ENV === "production"
+  ? path.join(process.cwd(), "dist", "public", "uploads")
+  : path.join(process.cwd(), "client", "public", "uploads");
 
 // Ensure upload directory exists
 async function ensureUploadDir() {
