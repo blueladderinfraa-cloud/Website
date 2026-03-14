@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { trpc } from "@/lib/trpc";
 import {
   Building2,
   FileText,
@@ -14,10 +15,12 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
+  const { data: stats } = trpc.dashboard.stats.useQuery();
+
   try {
     return (
-      <AdminLayout 
-        currentPage="dashboard" 
+      <AdminLayout
+        currentPage="dashboard"
         title="Dashboard"
         description="Admin dashboard overview"
       >
@@ -32,10 +35,10 @@ export default function AdminDashboard() {
           {/* Stats Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Active Projects", value: "12", icon: Building2, color: "bg-blue-500", href: "/admin/projects" },
-              { title: "New Inquiries", value: "8", icon: MessageSquare, color: "bg-green-500", href: "/admin/inquiries" },
-              { title: "Total Clients", value: "45", icon: Users, color: "bg-purple-500", href: "/admin/users" },
-              { title: "Total Projects", value: "67", icon: Briefcase, color: "bg-orange-500", href: "/admin/projects" },
+              { title: "Active Projects", value: String(stats?.activeProjects ?? 0), icon: Building2, color: "bg-blue-500", href: "/admin/projects" },
+              { title: "New Inquiries", value: String(stats?.totalInquiries ?? 0), icon: MessageSquare, color: "bg-green-500", href: "/admin/inquiries" },
+              { title: "Total Clients", value: String(stats?.totalClients ?? 0), icon: Users, color: "bg-purple-500", href: "/admin/users" },
+              { title: "Total Projects", value: String(stats?.totalProjects ?? 0), icon: Briefcase, color: "bg-orange-500", href: "/admin/projects" },
             ].map((stat) => (
               <Link key={stat.title} href={stat.href}>
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">

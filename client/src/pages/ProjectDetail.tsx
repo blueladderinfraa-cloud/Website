@@ -83,7 +83,7 @@ function BeforeAfterSlider({ beforeImage, afterImage }: { beforeImage: string; a
           src={beforeImage}
           alt="Before"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ width: containerRef.current?.offsetWidth || "100%" }}
+          style={{ width: containerRef.current?.offsetWidth ? `${containerRef.current.offsetWidth}px` : "100%" }}
         />
       </div>
       
@@ -113,6 +113,7 @@ export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const { data: project, isLoading } = trpc.projects.getBySlug.useQuery({ slug: slug || "" });
   const images = project?.images;
@@ -151,13 +152,23 @@ export default function ProjectDetail() {
     return () => clearInterval(interval);
   }, [isAutoPlaying, displayImages.length]);
 
+  // Clean up resume timer on unmount
+  useEffect(() => {
+    return () => {
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
+  }, []);
+
   // Pause auto-play when user interacts with slider
   const handleManualNavigation = (newIndex: number) => {
     setCurrentImageIndex(newIndex);
     setIsAutoPlaying(false);
-    
+
+    // Clear any existing resume timer
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+
     // Resume auto-play after 10 seconds of no interaction
-    setTimeout(() => {
+    resumeTimerRef.current = setTimeout(() => {
       setIsAutoPlaying(true);
     }, 10000);
   };

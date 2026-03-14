@@ -61,7 +61,7 @@ export default function Contact() {
       email: formData.email,
       phone: formData.phone || undefined,
       company: formData.company || undefined,
-      serviceType: (formData.serviceType as "residential" | "commercial" | "industrial" | "infrastructure" | "general") || undefined,
+      serviceType: (["residential", "commercial", "industrial", "infrastructure"].includes(formData.serviceType) ? formData.serviceType as "residential" | "commercial" | "industrial" | "infrastructure" | "general" : "general") || undefined,
       estimatedBudget: formData.budget || undefined,
       message: formData.message,
       source: "contact_form",
@@ -90,7 +90,7 @@ export default function Contact() {
                   We have received your message and will get back to you within 24 hours. 
                   Our team is excited to learn more about your project.
                 </p>
-                <Button onClick={() => setIsSubmitted(false)} variant="outline">
+                <Button onClick={() => { setIsSubmitted(false); setFormData({ name: "", email: "", phone: "", company: "", serviceType: "", budget: "", timeline: "", message: "" }); }} variant="outline">
                   Submit Another Inquiry
                 </Button>
               </CardContent>
