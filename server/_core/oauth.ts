@@ -36,7 +36,9 @@ export function registerOAuthRoutes(app: Express) {
       console.log("[OAuth] Valid session found for:", payload.openId);
       
       // Serve the main app (which will handle the /admin route client-side)
-      const clientTemplate = path.resolve(import.meta.dirname, "../..", "client", "index.html");
+      const clientTemplate = process.env.NODE_ENV === "production"
+        ? path.resolve(process.cwd(), "dist", "public", "index.html")
+        : path.resolve(import.meta.dirname, "../..", "client", "index.html");
       res.sendFile(clientTemplate);
     } catch (error) {
       console.log("[OAuth] Invalid session, redirecting to admin-access page");
@@ -48,7 +50,9 @@ export function registerOAuthRoutes(app: Express) {
   // Simple redirect page - uses meta refresh and immediate JS redirect
   app.get("/go-admin", (req: Request, res: Response) => {
     console.log("[OAuth] /go-admin route hit!");
-    const redirectPagePath = path.resolve(import.meta.dirname, "../..", "client", "public", "go-admin.html");
+    const redirectPagePath = process.env.NODE_ENV === "production"
+      ? path.resolve(process.cwd(), "dist", "public", "go-admin.html")
+      : path.resolve(import.meta.dirname, "../..", "client", "public", "go-admin.html");
     console.log("[OAuth] Serving redirect page from:", redirectPagePath);
     res.sendFile(redirectPagePath);
   });
@@ -57,7 +61,9 @@ export function registerOAuthRoutes(app: Express) {
   // Static admin access page - completely bypasses client-side routing
   app.get("/admin-access", (req: Request, res: Response) => {
     console.log("[OAuth] /admin-access route hit!");
-    const accessPagePath = path.resolve(import.meta.dirname, "../..", "client", "public", "admin-access.html");
+    const accessPagePath = process.env.NODE_ENV === "production"
+      ? path.resolve(process.cwd(), "dist", "public", "admin-access.html")
+      : path.resolve(import.meta.dirname, "../..", "client", "public", "admin-access.html");
     console.log("[OAuth] Serving access page from:", accessPagePath);
     res.sendFile(accessPagePath);
   });
@@ -67,7 +73,7 @@ export function registerOAuthRoutes(app: Express) {
   app.get("/admin-login", (req: Request, res: Response) => {
     console.log("[OAuth] /admin-login route hit!");
     const loginPagePath = process.env.NODE_ENV === "production"
-      ? path.resolve(import.meta.dirname, "public", "admin-login.html")
+      ? path.resolve(process.cwd(), "dist", "public", "admin-login.html")
       : path.resolve(import.meta.dirname, "../..", "client", "admin-login.html");
     console.log("[OAuth] Serving login page from:", loginPagePath);
     res.sendFile(loginPagePath);
