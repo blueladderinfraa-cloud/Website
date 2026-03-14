@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" fill="none">
+  <!-- Ladder (left side) - two vertical rails + horizontal rungs -->
+  <!-- Left rail -->
+  <rect x="30" y="28" width="10" height="170" rx="2" fill="#1a365d"/>
+  <!-- Right rail -->
+  <rect x="66" y="28" width="10" height="170" rx="2" fill="#1a365d"/>
+  <!-- Rungs -->
+  <rect x="30" y="42" width="46" height="8" rx="1.5" fill="#1a365d"/>
+  <rect x="30" y="68" width="46" height="8" rx="1.5" fill="#1a365d"/>
+  <rect x="30" y="94" width="46" height="8" rx="1.5" fill="#1a365d"/>
+  <rect x="30" y="120" width="46" height="8" rx="1.5" fill="#1a365d"/>
+  <rect x="30" y="146" width="46" height="8" rx="1.5" fill="#1a365d"/>
+  <rect x="30" y="172" width="46" height="8" rx="1.5" fill="#1a365d"/>
+
+  <!-- Building 1 - behind ladder area, dark navy -->
+  <rect x="80" y="55" width="28" height="143" rx="2" fill="#1a365d"/>
+
+  <!-- Building 2 - dark blue -->
+  <rect x="110" y="40" width="28" height="158" rx="2" fill="#1e5a8a"/>
+
+  <!-- Building 3 - medium blue (tallest) -->
+  <rect x="140" y="22" width="28" height="176" rx="2" fill="#3a8bc2"/>
+
+  <!-- Building 4 - light blue -->
+  <rect x="162" y="45" width="26" height="153" rx="2" fill="#5badd6"/>
+
+  <!-- Building 5 - lightest blue -->
+  <rect x="182" y="65" width="22" height="133" rx="2" fill="#89cff0"/>
+</svg>

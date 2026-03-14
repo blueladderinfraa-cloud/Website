@@ -6,7 +6,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { useContentManager } from "@/hooks/useContentManager";
-import { useBrandingManager } from "@/hooks/useBrandingManager";
+
 
 const quickLinks = [
   { href: "/about", label: "About Us" },
@@ -32,7 +32,6 @@ const socialLinks = [
 
 export default function Footer() {
   const { getContactContent } = useContentManager();
-  const { hasCustomLogo, getLogoProps } = useBrandingManager();
   const contactContent = getContactContent();
 
   return (
@@ -43,35 +42,19 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-6">
             <div className="flex items-center gap-3 logo-container">
-              {hasCustomLogo() && (
-                <img
-                  src={getLogoProps().src}
-                  alt={getLogoProps().alt}
-                  className="h-10 object-contain max-w-[140px]"
-                  style={{ filter: "brightness(0) invert(1)" }}
-                  onError={(e) => {
-                    // Fallback to icon if image fails to load
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    const iconLogo = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
-                    if (iconLogo) iconLogo.style.display = 'flex';
-                  }}
-                />
-              )}
-              <div className="flex items-center gap-2">
-                {!hasCustomLogo() && (
-                  <div className="w-12 h-12 rounded-lg gradient-accent flex items-center justify-center fallback-icon">
-                    <span className="text-accent-foreground font-bold text-xl">B</span>
-                  </div>
-                )}
-                <div className="flex flex-col">
-                  <span className="font-bold text-xl leading-tight">
-                    {getLogoProps().fallbackText.split(' ')[0] || 'Blueladder'}
-                  </span>
-                  <span className="text-sm leading-tight text-white/60">
-                    {getLogoProps().fallbackText.split(' ')[1] || 'INFRA'}
-                  </span>
-                </div>
+              <img
+                src="/logo.svg"
+                alt="Blueladder Infra Logo"
+                className="h-10 object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+              <div className="flex flex-col">
+                <span className="font-bold text-xl leading-tight">
+                  Blueladder
+                </span>
+                <span className="text-sm leading-tight text-white/60">
+                  INFRA
+                </span>
               </div>
             </div>
             <p className="text-white/70 text-sm leading-relaxed">

@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Phone, ChevronDown } from "lucide-react";
+import { Menu, Phone, ChevronDown } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useBrandingManager } from "@/hooks/useBrandingManager";
+
 import { useContentManager } from "@/hooks/useContentManager";
 import { getLoginUrl } from "@/const";
 import {
@@ -28,7 +28,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
-  const { hasCustomLogo, getLogoProps } = useBrandingManager();
   const { getContactContent } = useContentManager();
   const contactContent = getContactContent();
 
@@ -65,34 +64,19 @@ export default function Navbar() {
         <nav className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 logo-container">
-            {hasCustomLogo() && (
-              <img
-                src={getLogoProps().src}
-                alt={getLogoProps().alt}
-                className="h-12 object-contain max-w-[160px] logo-transparent logo-no-bg force-transparent dark-logo remove-white-filter"
-                onError={(e) => {
-                  // Fallback to icon if image fails to load
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const iconLogo = target.parentElement?.querySelector('.fallback-icon') as HTMLElement;
-                  if (iconLogo) iconLogo.style.display = 'flex';
-                }}
-              />
-            )}
-            <div className="flex items-center gap-2">
-              {!hasCustomLogo() && (
-                <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center fallback-icon">
-                  <span className="text-white font-bold text-xl">BL</span>
-                </div>
-              )}
-              <div className="flex flex-col">
-                <span className={`font-bold text-xl leading-tight ${isScrolled ? "text-primary" : "text-white"}`}>
-                  {getLogoProps().fallbackText.split(' ')[0] || 'Blueladder'}
-                </span>
-                <span className={`text-sm leading-tight ${isScrolled ? "text-muted-foreground" : "text-white/80"}`}>
-                  {getLogoProps().fallbackText.split(' ')[1] || 'INFRA'}
-                </span>
-              </div>
+            <img
+              src="/logo.svg"
+              alt="Blueladder Infra Logo"
+              className="h-12 object-contain"
+              style={isScrolled ? {} : { filter: "brightness(0) invert(1)" }}
+            />
+            <div className="flex flex-col">
+              <span className={`font-bold text-xl leading-tight ${isScrolled ? "text-primary" : "text-white"}`}>
+                Blueladder
+              </span>
+              <span className={`text-sm leading-tight ${isScrolled ? "text-muted-foreground" : "text-white/80"}`}>
+                INFRA
+              </span>
             </div>
           </Link>
 
