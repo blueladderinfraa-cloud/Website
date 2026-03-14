@@ -107,13 +107,30 @@ export function registerOAuthRoutes(app: Express) {
 
     try {
       console.log("[OAuth] Valid credentials, looking for admin user...");
-      // Get the admin user from database
-      const adminUser = await db.getUserByOpenId("admin-local-dev");
-      
+      // Get the admin user from database, or create if not exists
+      let adminUser = await db.getUserByOpenId("admin-local-dev");
+
       if (!adminUser) {
-        console.log("[OAuth] Admin user not found in database");
-        res.status(404).json({ error: "Admin user not found" });
+        console.log("[OAuth] Admin user not found, creating...");
+        await db.upsertUser({
+          openId: "admin-local-dev",
+          name: "Admin User",
+          email: username,
+          loginMethod: "admin-login",
+          lastSignedIn: new Date(),
+        });
+        adminUser = await db.getUserByOpenId("admin-local-dev");
+      }
+
+      if (!adminUser) {
+        console.log("[OAuth] Failed to create admin user");
+        res.status(500).json({ error: "Failed to create admin user" });
         return;
+      }
+
+      // Ensure admin role is set
+      if (adminUser.role !== "admin") {
+        await db.upsertUser({ openId: "admin-local-dev", role: "admin" as any });
       }
 
       console.log("[OAuth] Admin user found, creating session...");
