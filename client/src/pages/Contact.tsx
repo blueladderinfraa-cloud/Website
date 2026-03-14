@@ -296,11 +296,11 @@ export default function Contact() {
                             <SelectValue placeholder="Select budget" />
                           </SelectTrigger>
                           <SelectContent className="bg-white">
-                            <SelectItem value="under-100k">Under $100K</SelectItem>
-                            <SelectItem value="100k-500k">$100K - $500K</SelectItem>
-                            <SelectItem value="500k-1m">$500K - $1M</SelectItem>
-                            <SelectItem value="1m-5m">$1M - $5M</SelectItem>
-                            <SelectItem value="over-5m">Over $5M</SelectItem>
+                            <SelectItem value="under-10l">Under ₹10 Lakh</SelectItem>
+                            <SelectItem value="10l-50l">₹10 Lakh - ₹50 Lakh</SelectItem>
+                            <SelectItem value="50l-1cr">₹50 Lakh - ₹1 Crore</SelectItem>
+                            <SelectItem value="1cr-5cr">₹1 Crore - ₹5 Crore</SelectItem>
+                            <SelectItem value="over-5cr">Over ₹5 Crore</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
