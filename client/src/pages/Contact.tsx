@@ -276,7 +276,7 @@ export default function Contact() {
                           <SelectTrigger>
                             <SelectValue placeholder="Select type" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[100]">
                             <SelectItem value="residential">Residential</SelectItem>
                             <SelectItem value="commercial">Commercial</SelectItem>
                             <SelectItem value="industrial">Industrial</SelectItem>
@@ -295,7 +295,7 @@ export default function Contact() {
                           <SelectTrigger>
                             <SelectValue placeholder="Select budget" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[100]">
                             <SelectItem value="under-100k">Under $100K</SelectItem>
                             <SelectItem value="100k-500k">$100K - $500K</SelectItem>
                             <SelectItem value="500k-1m">$500K - $1M</SelectItem>
@@ -313,7 +313,7 @@ export default function Contact() {
                           <SelectTrigger>
                             <SelectValue placeholder="Select timeline" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="z-[100]">
                             <SelectItem value="immediate">Immediate</SelectItem>
                             <SelectItem value="1-3-months">1-3 Months</SelectItem>
                             <SelectItem value="3-6-months">3-6 Months</SelectItem>
