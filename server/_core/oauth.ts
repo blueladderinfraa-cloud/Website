@@ -66,7 +66,9 @@ export function registerOAuthRoutes(app: Express) {
   // Admin login page - serves a professional login form
   app.get("/admin-login", (req: Request, res: Response) => {
     console.log("[OAuth] /admin-login route hit!");
-    const loginPagePath = path.resolve(import.meta.dirname, "../..", "client", "admin-login.html");
+    const loginPagePath = process.env.NODE_ENV === "production"
+      ? path.resolve(import.meta.dirname, "public", "admin-login.html")
+      : path.resolve(import.meta.dirname, "../..", "client", "admin-login.html");
     console.log("[OAuth] Serving login page from:", loginPagePath);
     res.sendFile(loginPagePath);
   });
