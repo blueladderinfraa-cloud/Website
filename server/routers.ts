@@ -10,7 +10,6 @@ import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 
 // In-memory OTP store
-const otpStore = new Map<string, { code: string; expiresAt: number }>();
 
 // Admin procedure
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -739,71 +738,6 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         await db.upsertUser({ openId: ctx.user.openId, name: input.name, email: input.email, phone: input.phone || null });
         return { success: true };
-      }),
-
-    sendOTP: adminProcedure
-      .input(z.object({ action: z.string() }))
-      .mutation(async ({ ctx }) => {
-        // Get admin phone number - hardcoded default for security
-        const phone = process.env.ADMIN_PHONE || "917778870070";
-
-        // Generate 6-digit OTP
-        const otp = String(Math.floor(100000 + Math.random() * 900000));
-
-        // Store OTP in memory (with expiry)
-        otpStore.set(ctx.user.openId, { code: otp, expiresAt: Date.now() + 5 * 60 * 1000 });
-
-        // Send SMS via Fast2SMS API
-        const apiKey = process.env.SMS_API_KEY;
-        if (!apiKey) {
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "SMS service not configured. Contact administrator." });
-        }
-
-        try {
-          const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-            method: "POST",
-            headers: {
-              "authorization": apiKey,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              route: "otp",
-              variables_values: otp,
-              numbers: phone.replace(/\D/g, '').replace(/^91/, ''),
-              flash: "0",
-            }),
-          });
-          const data = await response.json();
-          if (!data.return) {
-            console.error("[SMS] Failed to send:", data);
-            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to send OTP. Please try again." });
-          }
-          // Mask phone number for display
-          const maskedPhone = phone.replace(/.(?=.{4})/g, '*');
-          return { sent: true, phone: maskedPhone };
-        } catch (error: any) {
-          if (error instanceof TRPCError) throw error;
-          console.error("[SMS] Error sending OTP:", error);
-          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to send OTP. Please try again." });
-        }
-      }),
-
-    verifyOTP: adminProcedure
-      .input(z.object({ code: z.string().length(6) }))
-      .mutation(async ({ ctx, input }) => {
-        const stored = otpStore.get(ctx.user.openId);
-        if (!stored) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "No OTP requested. Please request a new code." });
-        }
-        if (Date.now() > stored.expiresAt) {
-          otpStore.delete(ctx.user.openId);
-          throw new TRPCError({ code: "BAD_REQUEST", message: "OTP expired. Please request a new code." });
-        }
-        if (stored.code !== input.code) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid OTP code." });
-        }
-        otpStore.delete(ctx.user.openId);
-        return { verified: true };
       }),
 
     changePassword: adminProcedure
