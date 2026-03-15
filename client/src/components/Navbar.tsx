@@ -6,7 +6,7 @@ import { Menu, Phone, ChevronDown } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 import { useContentManager } from "@/hooks/useContentManager";
-import { getLoginUrl } from "@/const";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -114,13 +114,13 @@ export default function Navbar() {
               </a>
             )}
 
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     className={`gap-2 admin-user-button ${
-                      isScrolled 
-                        ? "bg-white/95 text-primary border-primary/20 hover:bg-white" 
+                      isScrolled
+                        ? "bg-white/95 text-primary border-primary/20 hover:bg-white"
                         : "bg-white/90 text-primary border-white/20 hover:bg-white backdrop-blur-sm"
                     }`}
                   >
@@ -141,17 +141,6 @@ export default function Navbar() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Button
-                className={`admin-user-button ${
-                  isScrolled 
-                    ? "bg-white/95 text-primary border-primary/20 hover:bg-white" 
-                    : "bg-white/90 text-primary border-white/20 hover:bg-white backdrop-blur-sm"
-                }`}
-                onClick={() => (window.location.href = getLoginUrl())}
-              >
-                🔐 Admin Login
-              </Button>
             )}
 
             <Link href="/contact">
@@ -199,10 +188,10 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <hr className="border-white/20" />
-                <div className="mobile-admin-section">
-                  {isAuthenticated ? (
-                    <>
+                {isAuthenticated && (
+                  <>
+                    <hr className="border-white/20" />
+                    <div className="mobile-admin-section">
                       <div className="mobile-admin-info text-white/70 text-sm mb-2">
                         👤 Logged in as: {user?.name || user?.email || "Admin"}
                       </div>
@@ -222,17 +211,9 @@ export default function Navbar() {
                       >
                         🚪 Logout
                       </Button>
-                    </>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20"
-                      onClick={() => (window.location.href = getLoginUrl())}
-                    >
-                      🔐 Admin Login
-                    </Button>
-                  )}
-                </div>
+                    </div>
+                  </>
+                )}
                 <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                     Get a Quote
