@@ -2,17 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Phone, ChevronDown } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
-
+import { Menu, Phone } from "lucide-react";
 import { useContentManager } from "@/hooks/useContentManager";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -27,7 +18,6 @@ export default function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
   const { getContactContent } = useContentManager();
   const contactContent = getContactContent();
 
@@ -42,14 +32,6 @@ export default function Navbar() {
   const isActive = (href: string) => {
     if (href === "/") return location === "/";
     return location.startsWith(href);
-  };
-
-  const getPortalLink = () => {
-    if (!user) return null;
-    if (user.role === "admin") return "/admin";
-    if (user.role === "client") return "/client";
-    if (user.role === "subcontractor") return "/subcontractor";
-    return null;
   };
 
   return (
@@ -114,35 +96,6 @@ export default function Navbar() {
               </a>
             )}
 
-            {isAuthenticated && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    className={`gap-2 admin-user-button ${
-                      isScrolled
-                        ? "bg-white/95 text-primary border-primary/20 hover:bg-white"
-                        : "bg-white/90 text-primary border-white/20 hover:bg-white backdrop-blur-sm"
-                    }`}
-                  >
-                    👤 {user?.name || user?.email || "Admin"}
-                    <ChevronDown className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="admin-dropdown-menu bg-white/98 backdrop-blur-md border-white/20">
-                  {getPortalLink() && (
-                    <DropdownMenuItem asChild>
-                      <Link href={getPortalLink()!} className="admin-dropdown-item text-primary hover:bg-primary/10 font-medium">
-                        🏗️ Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem onClick={() => logout()} className="admin-dropdown-item text-primary hover:bg-primary/10 font-medium">
-                    🚪 Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-
             <Link href="/contact">
               <Button className="gradient-accent text-accent-foreground font-semibold">
                 Get a Quote
@@ -188,32 +141,6 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                {isAuthenticated && (
-                  <>
-                    <hr className="border-white/20" />
-                    <div className="mobile-admin-section">
-                      <div className="mobile-admin-info text-white/70 text-sm mb-2">
-                        👤 Logged in as: {user?.name || user?.email || "Admin"}
-                      </div>
-                      {getPortalLink() && (
-                        <Link
-                          href={getPortalLink()!}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block text-lg font-medium text-amber-400 hover:text-amber-300 bg-white/10 px-4 py-3 rounded-lg mb-3"
-                        >
-                          🏗️ Admin Dashboard
-                        </Link>
-                      )}
-                      <Button
-                        variant="outline"
-                        onClick={() => logout()}
-                        className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20"
-                      >
-                        🚪 Logout
-                      </Button>
-                    </div>
-                  </>
-                )}
                 <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full gradient-accent text-accent-foreground font-semibold">
                     Get a Quote
