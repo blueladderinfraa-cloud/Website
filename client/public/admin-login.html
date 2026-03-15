@@ -255,7 +255,7 @@
                     // Success - redirect to admin dashboard
                     window.location.href = '/admin';
                 } else {
-                    showError(data.error || 'Login failed');
+                    showError(data.error || 'Login failed (status: ' + response.status + ')');
                 }
             } catch (error) {
                 showError('Network error. Please try again.');

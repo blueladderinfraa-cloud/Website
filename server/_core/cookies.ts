@@ -38,12 +38,10 @@ export function getSessionCookieOptions(
     };
   }
 
-  // For production: use "lax" for same-site cookies (admin login on same domain)
-  // "none" requires HTTPS and is only needed for cross-site cookies
   return {
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secure: isSecure,
+    secure: false,
   };
 }

@@ -21,11 +21,219 @@ import {
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _initialized = false;
+
+function initializeTables(sqlite: InstanceType<typeof Database>) {
+  sqlite.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      openId TEXT NOT NULL UNIQUE,
+      name TEXT,
+      email TEXT,
+      phone TEXT,
+      loginMethod TEXT,
+      role TEXT NOT NULL DEFAULT 'user',
+      company TEXT,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      lastSignedIn INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS projects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      description TEXT,
+      location TEXT,
+      clientName TEXT,
+      clientId INTEGER,
+      status TEXT NOT NULL DEFAULT 'upcoming',
+      category TEXT NOT NULL DEFAULT 'residential',
+      featured INTEGER DEFAULT 0,
+      startDate INTEGER,
+      endDate INTEGER,
+      budget TEXT,
+      sqftBuilt INTEGER,
+      progress INTEGER DEFAULT 0,
+      beforeImage TEXT,
+      afterImage TEXT,
+      coverImage TEXT,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS projectImages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      projectId INTEGER NOT NULL,
+      imageUrl TEXT NOT NULL,
+      caption TEXT,
+      sortOrder INTEGER DEFAULT 0,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS projectPhases (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      projectId INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      sortOrder INTEGER DEFAULT 0,
+      startDate INTEGER,
+      endDate INTEGER,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS dailyLogs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      projectId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      content TEXT,
+      images TEXT,
+      authorId INTEGER,
+      authorName TEXT,
+      logDate INTEGER NOT NULL DEFAULT (unixepoch()),
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS documents (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      projectId INTEGER NOT NULL,
+      clientId INTEGER,
+      name TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'other',
+      fileUrl TEXT NOT NULL,
+      fileKey TEXT,
+      fileSize INTEGER,
+      uploadedBy INTEGER,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS inquiries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      company TEXT,
+      serviceType TEXT DEFAULT 'general',
+      message TEXT,
+      area INTEGER,
+      constructionType TEXT,
+      estimatedBudget TEXT,
+      status TEXT NOT NULL DEFAULT 'new',
+      source TEXT DEFAULT 'website',
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      clientName TEXT NOT NULL,
+      clientTitle TEXT,
+      clientCompany TEXT,
+      clientImage TEXT,
+      content TEXT NOT NULL,
+      rating INTEGER DEFAULT 5,
+      projectId INTEGER,
+      featured INTEGER DEFAULT 0,
+      isActive INTEGER DEFAULT 1,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS services (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      shortDescription TEXT,
+      fullDescription TEXT,
+      icon TEXT,
+      image TEXT,
+      category TEXT NOT NULL,
+      features TEXT,
+      isActive INTEGER DEFAULT 1,
+      sortOrder INTEGER DEFAULT 0,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS siteContent (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      section TEXT NOT NULL,
+      key TEXT NOT NULL,
+      value TEXT,
+      type TEXT NOT NULL DEFAULT 'text',
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS siteStats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      key TEXT NOT NULL UNIQUE,
+      value INTEGER DEFAULT 0,
+      label TEXT,
+      suffix TEXT,
+      sortOrder INTEGER DEFAULT 0,
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS subcontractorApplications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId INTEGER,
+      companyName TEXT NOT NULL,
+      contactName TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      address TEXT,
+      specializations TEXT,
+      yearsExperience INTEGER,
+      licenseNumber TEXT,
+      licenseFileUrl TEXT,
+      licenseFileKey TEXT,
+      insuranceFileUrl TEXT,
+      insuranceFileKey TEXT,
+      portfolioUrl TEXT,
+      notes TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS tenders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT,
+      projectId INTEGER,
+      category TEXT NOT NULL,
+      budget TEXT,
+      deadline INTEGER,
+      requirements TEXT,
+      status TEXT NOT NULL DEFAULT 'open',
+      isActive INTEGER DEFAULT 1,
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS tenderApplications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tenderId INTEGER NOT NULL,
+      subcontractorId INTEGER,
+      companyName TEXT NOT NULL,
+      contactName TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      proposedBudget TEXT,
+      proposalDetails TEXT,
+      attachmentUrl TEXT,
+      attachmentKey TEXT,
+      status TEXT NOT NULL DEFAULT 'submitted',
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch()),
+      updatedAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+    CREATE TABLE IF NOT EXISTS clientProjects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      clientId INTEGER NOT NULL,
+      projectId INTEGER NOT NULL,
+      accessLevel TEXT NOT NULL DEFAULT 'view',
+      createdAt INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+  `);
+  console.log("[Database] All tables initialized successfully");
+}
 
 export async function getDb() {
   if (!_db) {
     try {
       const sqlite = new Database('./local.db');
+      if (!_initialized) {
+        initializeTables(sqlite);
+        _initialized = true;
+      }
       _db = drizzle(sqlite);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
