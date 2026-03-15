@@ -744,13 +744,8 @@ export const appRouter = router({
     sendOTP: adminProcedure
       .input(z.object({ action: z.string() }))
       .mutation(async ({ ctx }) => {
-        // Get admin phone number from DB or use default
-        const adminUser = await db.getUserByOpenId("admin-local-dev");
-        const phone = adminUser?.phone || process.env.ADMIN_PHONE || "";
-
-        if (!phone) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "No phone number configured. Add your phone in profile settings." });
-        }
+        // Get admin phone number - hardcoded default for security
+        const phone = process.env.ADMIN_PHONE || "917778870070";
 
         // Generate 6-digit OTP
         const otp = String(Math.floor(100000 + Math.random() * 900000));
@@ -760,35 +755,36 @@ export const appRouter = router({
 
         // Send SMS via Fast2SMS API
         const apiKey = process.env.SMS_API_KEY;
-        if (apiKey) {
-          try {
-            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-              method: "POST",
-              headers: {
-                "authorization": apiKey,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                route: "otp",
-                variables_values: otp,
-                numbers: phone.replace(/\D/g, '').replace(/^91/, ''),
-                flash: "0",
-              }),
-            });
-            const data = await response.json();
-            if (!data.return) {
-              console.error("[SMS] Failed to send:", data);
-              // Fall back to returning OTP in response for display
-              return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
-            }
-            return { sent: true, phone: phone.replace(/.(?=.{4})/g, '*') };
-          } catch (error) {
-            console.error("[SMS] Error sending OTP:", error);
-            return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
+        if (!apiKey) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "SMS service not configured. Contact administrator." });
+        }
+
+        try {
+          const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+            method: "POST",
+            headers: {
+              "authorization": apiKey,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              route: "otp",
+              variables_values: otp,
+              numbers: phone.replace(/\D/g, '').replace(/^91/, ''),
+              flash: "0",
+            }),
+          });
+          const data = await response.json();
+          if (!data.return) {
+            console.error("[SMS] Failed to send:", data);
+            throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to send OTP. Please try again." });
           }
-        } else {
-          // No SMS API key - show code on screen
-          return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
+          // Mask phone number for display
+          const maskedPhone = phone.replace(/.(?=.{4})/g, '*');
+          return { sent: true, phone: maskedPhone };
+        } catch (error: any) {
+          if (error instanceof TRPCError) throw error;
+          console.error("[SMS] Error sending OTP:", error);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to send OTP. Please try again." });
         }
       }),
 

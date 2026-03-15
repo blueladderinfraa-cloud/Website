@@ -14,7 +14,7 @@ import {
 import AdminLayout from "@/components/admin/AdminLayout";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { User, Lock, Save, Loader2, ShieldCheck, KeyRound, Phone, SendHorizonal } from "lucide-react";
+import { User, Lock, Save, Loader2, ShieldCheck, KeyRound, Smartphone } from "lucide-react";
 
 export default function AdminSettings() {
   const { data: profile, isLoading } = trpc.adminSettings.getProfile.useQuery();
@@ -22,7 +22,6 @@ export default function AdminSettings() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [profileInitialized, setProfileInitialized] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -33,15 +32,12 @@ export default function AdminSettings() {
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [otpInput, setOtpInput] = useState("");
   const [otpAction, setOtpAction] = useState<"profile" | "password" | null>(null);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpFallbackCode, setOtpFallbackCode] = useState<string | null>(null);
   const [otpPhone, setOtpPhone] = useState("");
   const [otpSending, setOtpSending] = useState(false);
 
   if (profile && !profileInitialized) {
     setName(profile.name || "");
     setEmail(profile.email || "");
-    setPhone(profile.phone || "");
     setProfileInitialized(true);
   }
 
@@ -71,7 +67,6 @@ export default function AdminSettings() {
   });
 
   const requestOTP = useCallback(async (action: "profile" | "password") => {
-    // Validate before sending OTP
     if (action === "profile") {
       if (!name.trim() || !email.trim()) {
         toast.error("Name and email are required");
@@ -96,20 +91,15 @@ export default function AdminSettings() {
     setOtpAction(action);
     setOtpInput("");
     setOtpSending(true);
-    setOtpFallbackCode(null);
-    setOtpSent(false);
 
     try {
       const result = await sendOTP.mutateAsync({ action });
       setOtpPhone(result.phone);
       if (result.sent) {
-        setOtpSent(true);
-        setOtpFallbackCode(null);
+        setOtpDialogOpen(true);
       } else {
-        setOtpSent(false);
-        setOtpFallbackCode(result.fallbackCode || null);
+        toast.error("Failed to send OTP. Please check your phone number configuration.");
       }
-      setOtpDialogOpen(true);
     } catch (error: any) {
       toast.error(error.message || "Failed to send OTP");
     } finally {
@@ -124,15 +114,15 @@ export default function AdminSettings() {
       setOtpInput("");
 
       if (otpAction === "profile") {
-        updateProfile.mutate({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined });
+        updateProfile.mutate({ name: name.trim(), email: email.trim() });
       } else if (otpAction === "password") {
         changePassword.mutate({ currentPassword, newPassword });
       }
     } catch (error: any) {
-      toast.error(error.message || "Invalid verification code");
+      toast.error(error.message || "Invalid OTP code");
       setOtpInput("");
     }
-  }, [otpInput, otpAction, name, email, phone, currentPassword, newPassword, verifyOTP, updateProfile, changePassword]);
+  }, [otpInput, otpAction, name, email, currentPassword, newPassword, verifyOTP, updateProfile, changePassword]);
 
   const handleUpdateProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,7 +156,7 @@ export default function AdminSettings() {
               </div>
               <div>
                 <CardTitle className="text-xl">Profile</CardTitle>
-                <CardDescription>Update your display name, login username, and phone</CardDescription>
+                <CardDescription>Update your display name and login username</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -192,18 +182,6 @@ export default function AdminSettings() {
                   className="h-11"
                 />
                 <p className="text-xs text-muted-foreground">This is used as your login username</p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="font-medium">Phone Number (for OTP)</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 7778870070"
-                  className="h-11"
-                />
-                <p className="text-xs text-muted-foreground">OTP verification codes will be sent to this number</p>
               </div>
               <Button
                 type="submit"
@@ -292,7 +270,7 @@ export default function AdminSettings() {
               <ShieldCheck className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
               <div className="text-sm text-green-800">
                 <p className="font-semibold mb-1">OTP Verification Enabled</p>
-                <p>All profile and password changes require a one-time verification code sent to your registered phone number for security.</p>
+                <p>All changes require a one-time verification code sent to your registered mobile number.</p>
               </div>
             </div>
           </CardContent>
@@ -305,45 +283,29 @@ export default function AdminSettings() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <ShieldCheck className="w-6 h-6 text-green-600" />
-              Verify Your Identity
+              OTP Verification
             </DialogTitle>
             <DialogDescription>
-              {otpSent
-                ? `A 6-digit OTP has been sent to ${otpPhone}`
-                : "Enter the verification code below to confirm your changes."
-              }
+              A 6-digit OTP has been sent to your registered mobile number.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-5 py-4">
-            {/* Show OTP status */}
-            {otpSent ? (
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-                <SendHorizonal className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                <p className="text-sm font-medium text-green-800">OTP sent to your phone</p>
-                <p className="text-xs text-green-600 mt-1">{otpPhone}</p>
-                <p className="text-xs text-muted-foreground mt-2">Code expires in 5 minutes</p>
-              </div>
-            ) : otpFallbackCode ? (
-              <div className="bg-slate-100 rounded-xl p-5 text-center">
-                <Phone className="w-8 h-8 text-primary mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground mb-2">Your verification code</p>
-                <div className="text-4xl font-mono font-bold tracking-[0.5em] text-primary">
-                  {otpFallbackCode}
-                </div>
-                <p className="text-xs text-amber-600 mt-3">SMS not configured. Set SMS_API_KEY in Railway to enable SMS delivery.</p>
-              </div>
-            ) : null}
+            <div className="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
+              <Smartphone className="w-10 h-10 text-green-600 mx-auto mb-3" />
+              <p className="text-base font-semibold text-green-800">OTP Sent Successfully</p>
+              <p className="text-sm text-green-600 mt-1">Sent to {otpPhone}</p>
+              <p className="text-xs text-muted-foreground mt-2">Code expires in 5 minutes</p>
+            </div>
 
-            {/* OTP Input */}
             <div className="space-y-2">
-              <Label htmlFor="otpInput" className="font-medium">Enter OTP Code</Label>
+              <Label htmlFor="otpInput" className="font-medium">Enter OTP</Label>
               <Input
                 id="otpInput"
                 value={otpInput}
                 onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder="Enter 6-digit code"
-                className="h-12 text-center text-2xl font-mono tracking-[0.3em]"
+                placeholder="_ _ _ _ _ _"
+                className="h-14 text-center text-3xl font-mono tracking-[0.5em] border-2"
                 maxLength={6}
                 autoFocus
               />
