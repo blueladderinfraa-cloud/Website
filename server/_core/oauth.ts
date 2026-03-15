@@ -87,12 +87,14 @@ export function registerOAuthRoutes(app: Express) {
     // Allow admin login in both development and production for local setup
     const { username, password } = req.body;
     
-    // Admin credentials - including production credentials for local testing
+    // Admin credentials from environment variables
+    const adminEmail = process.env.ADMIN_EMAIL || "admin";
+    const adminPassword = process.env.ADMIN_PASSWORD || (() => {
+      console.warn("[OAuth] ADMIN_PASSWORD not set — falling back to default. Set ADMIN_PASSWORD env var for production.");
+      return "admin123";
+    })();
     const validCredentials: Record<string, string> = {
-      admin: "admin123",
-      administrator: "password123",
-      blueladder: "admin2024",
-      "kevadiamanthan@gmail.com": "Manthan3134"
+      [adminEmail]: adminPassword,
     };
 
     if (!username || !password) {

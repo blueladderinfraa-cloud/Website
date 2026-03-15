@@ -51,12 +51,12 @@ export default function AdminTestimonials() {
   });
 
   const utils = trpc.useUtils();
-  const { data: testimonials, isLoading } = trpc.testimonials.list.useQuery();
+  const { data: testimonials, isLoading } = trpc.testimonials.all.useQuery();
 
   const createTestimonial = trpc.testimonials.create.useMutation({
     onSuccess: () => {
       toast.success("Testimonial created!");
-      utils.testimonials.list.invalidate();
+      utils.testimonials.all.invalidate();
       setIsDialogOpen(false);
       resetForm();
     },
@@ -66,7 +66,7 @@ export default function AdminTestimonials() {
   const updateTestimonial = trpc.testimonials.update.useMutation({
     onSuccess: () => {
       toast.success("Testimonial updated!");
-      utils.testimonials.list.invalidate();
+      utils.testimonials.all.invalidate();
       setIsDialogOpen(false);
       resetForm();
     },
@@ -76,7 +76,7 @@ export default function AdminTestimonials() {
   const deleteTestimonial = trpc.testimonials.delete.useMutation({
     onSuccess: () => {
       toast.success("Testimonial deleted!");
-      utils.testimonials.list.invalidate();
+      utils.testimonials.all.invalidate();
     },
     onError: () => toast.error("Failed to delete testimonial"),
   });

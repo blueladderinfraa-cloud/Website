@@ -49,7 +49,7 @@ export default function AdminTenders() {
   });
 
   const utils = trpc.useUtils();
-  const { data: tenders, isLoading } = trpc.tenders.list.useQuery();
+  const { data: tenders, isLoading } = trpc.tenders.all.useQuery();
   const { data: applications } = trpc.tenders.applications.useQuery(
     { tenderId: selectedTender?.id || 0 },
     { enabled: !!selectedTender }
@@ -58,7 +58,7 @@ export default function AdminTenders() {
   const createTender = trpc.tenders.create.useMutation({
     onSuccess: () => {
       toast.success("Tender created!");
-      utils.tenders.list.invalidate();
+      utils.tenders.all.invalidate();
       setIsDialogOpen(false);
       resetForm();
     },
@@ -68,7 +68,7 @@ export default function AdminTenders() {
   const updateTender = trpc.tenders.update.useMutation({
     onSuccess: () => {
       toast.success("Tender updated!");
-      utils.tenders.list.invalidate();
+      utils.tenders.all.invalidate();
       setIsDialogOpen(false);
       resetForm();
     },
@@ -78,7 +78,7 @@ export default function AdminTenders() {
   const deleteTender = trpc.tenders.delete.useMutation({
     onSuccess: () => {
       toast.success("Tender deleted!");
-      utils.tenders.list.invalidate();
+      utils.tenders.all.invalidate();
     },
     onError: () => toast.error("Failed to delete tender"),
   });

@@ -45,8 +45,6 @@ export default function AdminContent() {
 
   const updateContent = trpc.siteContent.upsert.useMutation({
     onSuccess: async (data, variables) => {
-      console.log("Save success - data:", data, "variables:", variables); // Debug log
-      
       // Immediately update local state with the saved data
       let savedData;
       try {
@@ -72,7 +70,6 @@ export default function AdminContent() {
         });
       }
       
-      console.log("Updated local content:", updatedContent); // Debug log
       setContent(updatedContent);
       
       toast.success("Content saved successfully!");
@@ -92,8 +89,6 @@ export default function AdminContent() {
   });
 
   useEffect(() => {
-    console.log("useEffect triggered - siteContent:", siteContent); // Debug log
-    
     if (siteContent && siteContent.length > 0) {
       const contentMap: Record<string, any> = {};
       
@@ -140,10 +135,7 @@ export default function AdminContent() {
         }
       });
       
-      console.log("Final content map:", contentMap); // Debug log
       setContent(contentMap);
-    } else {
-      console.log("No siteContent available or empty array"); // Debug log
     }
   }, [siteContent]);
 
@@ -151,8 +143,6 @@ export default function AdminContent() {
     setIsSaving(true);
     
     try {
-      console.log("Saving:", { section, key, value }); // Debug log
-      
       // Optimistically update local state immediately
       const updatedContent = { ...content };
       
@@ -170,8 +160,6 @@ export default function AdminContent() {
         });
       }
       
-      console.log("Optimistic update - before:", content); // Debug log
-      console.log("Optimistic update - after:", updatedContent); // Debug log
       setContent(updatedContent);
       
       // Save to server
@@ -181,8 +169,6 @@ export default function AdminContent() {
         value: JSON.stringify(value), 
         type: "json" 
       });
-      
-      console.log("Save successful"); // Debug log
       
     } catch (error) {
       console.error("Save failed:", error);
@@ -195,7 +181,6 @@ export default function AdminContent() {
   };
 
   const forceRefresh = async () => {
-    console.log("Force refreshing content..."); // Debug log
     await utils.siteContent.get.invalidate();
     await utils.siteContent.get.refetch();
     toast.success("Content refreshed!");
@@ -256,21 +241,6 @@ export default function AdminContent() {
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           Force Refresh
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            console.log("=== CONTENT DEBUG INFO ===");
-            console.log("Current content state:", content);
-            console.log("Site content from server:", siteContent);
-            console.log("Active section:", activeSection);
-            console.log("Is saving:", isSaving);
-            console.log("========================");
-          }}
-          className="admin-button-secondary"
-          size="sm"
-        >
-          🐛 Debug Info
         </Button>
       </div>
 
@@ -1142,7 +1112,6 @@ export default function AdminContent() {
                         hours: content.contact_hours,
                       };
                       
-                      console.log("Contact form data:", contactData); // Debug log
                       handleSave("contact", "content", contactData);
                     }}
                     className="admin-button-primary"

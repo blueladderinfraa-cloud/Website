@@ -120,8 +120,8 @@ export default function AdminProjects() {
       status: project.status,
       coverImage: project.coverImage || "",
       images: project.images || [],
-      client: project.client || "",
-      area: project.area?.toString() || "",
+      client: project.clientName || "",
+      area: project.sqftBuilt?.toString() || "",
       featured: project.featured || false,
     });
     setIsDialogOpen(true);
@@ -129,9 +129,11 @@ export default function AdminProjects() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { client, area, ...rest } = formData;
     const data = {
-      ...formData,
-      area: formData.area ? parseInt(formData.area) : undefined,
+      ...rest,
+      clientName: client || undefined,
+      sqftBuilt: area ? parseInt(area) : undefined,
     };
 
     try {

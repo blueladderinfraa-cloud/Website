@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -27,6 +34,7 @@ import {
   FileText,
   Calendar,
   Upload,
+  Pencil,
 } from "lucide-react";
 
 export default function AdminProjectEdit() {
@@ -84,6 +92,188 @@ export default function AdminProjectEdit() {
       console.error(error);
     },
   });
+
+  const uploadImage = trpc.upload.image.useMutation();
+
+  const addGalleryImage = trpc.projects.addImage.useMutation({
+    onSuccess: () => {
+      toast.success("Image added to gallery!");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to add image");
+      console.error(error);
+    },
+  });
+
+  const deleteGalleryImage = trpc.projects.deleteImage.useMutation({
+    onSuccess: () => {
+      toast.success("Image removed from gallery");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete image");
+      console.error(error);
+    },
+  });
+
+  const addPhase = trpc.projects.addPhase.useMutation({
+    onSuccess: () => {
+      toast.success("Phase added!");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to add phase");
+      console.error(error);
+    },
+  });
+
+  const updatePhase = trpc.projects.updatePhase.useMutation({
+    onSuccess: () => {
+      toast.success("Phase updated!");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to update phase");
+      console.error(error);
+    },
+  });
+
+  const deletePhase = trpc.projects.deletePhase.useMutation({
+    onSuccess: () => {
+      toast.success("Phase deleted!");
+      utils.projects.getById.invalidate({ id: projectId });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete phase");
+      console.error(error);
+    },
+  });
+
+  // Gallery image upload
+  const galleryFileInputRef = useRef<HTMLInputElement>(null);
+  const [galleryCaption, setGalleryCaption] = useState("");
+  const [showGalleryCaptionDialog, setShowGalleryCaptionDialog] = useState(false);
+  const [pendingGalleryFile, setPendingGalleryFile] = useState<File | null>(null);
+  const [isUploadingGallery, setIsUploadingGallery] = useState(false);
+
+  // Phase dialog state
+  const [showPhaseDialog, setShowPhaseDialog] = useState(false);
+  const [editingPhase, setEditingPhase] = useState<any | null>(null);
+  const [phaseForm, setPhaseForm] = useState({
+    name: "",
+    description: "",
+    status: "pending" as "pending" | "in_progress" | "completed",
+    startDate: "",
+    endDate: "",
+  });
+
+  const handleGalleryFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+    setPendingGalleryFile(file);
+    setGalleryCaption("");
+    setShowGalleryCaptionDialog(true);
+    // Reset input so same file can be selected again
+    e.target.value = "";
+  };
+
+  const handleGalleryUploadConfirm = async () => {
+    if (!pendingGalleryFile) return;
+    setIsUploadingGallery(true);
+    try {
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(pendingGalleryFile);
+      });
+
+      const { url } = await uploadImage.mutateAsync({
+        base64,
+        filename: pendingGalleryFile.name,
+        contentType: pendingGalleryFile.type,
+        folder: "gallery",
+      });
+
+      await addGalleryImage.mutateAsync({
+        projectId,
+        imageUrl: url,
+        caption: galleryCaption || undefined,
+        sortOrder: images.length,
+      });
+
+      setShowGalleryCaptionDialog(false);
+      setPendingGalleryFile(null);
+      setGalleryCaption("");
+    } catch (error) {
+      toast.error("Failed to upload image");
+      console.error(error);
+    } finally {
+      setIsUploadingGallery(false);
+    }
+  };
+
+  const handleDeleteGalleryImage = (imageId: number) => {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+    deleteGalleryImage.mutate({ id: imageId });
+  };
+
+  const openAddPhaseDialog = () => {
+    setEditingPhase(null);
+    setPhaseForm({ name: "", description: "", status: "pending", startDate: "", endDate: "" });
+    setShowPhaseDialog(true);
+  };
+
+  const openEditPhaseDialog = (phase: any) => {
+    setEditingPhase(phase);
+    setPhaseForm({
+      name: phase.name || "",
+      description: phase.description || "",
+      status: phase.status || "pending",
+      startDate: phase.startDate ? new Date(phase.startDate).toISOString().split("T")[0] : "",
+      endDate: phase.endDate ? new Date(phase.endDate).toISOString().split("T")[0] : "",
+    });
+    setShowPhaseDialog(true);
+  };
+
+  const handlePhaseSubmit = () => {
+    if (!phaseForm.name.trim()) {
+      toast.error("Phase name is required");
+      return;
+    }
+
+    const data = {
+      name: phaseForm.name,
+      description: phaseForm.description || undefined,
+      status: phaseForm.status,
+      startDate: phaseForm.startDate ? new Date(phaseForm.startDate) : undefined,
+      endDate: phaseForm.endDate ? new Date(phaseForm.endDate) : undefined,
+    };
+
+    if (editingPhase) {
+      updatePhase.mutate({ id: editingPhase.id, ...data });
+    } else {
+      addPhase.mutate({ projectId, ...data, sortOrder: phases.length });
+    }
+    setShowPhaseDialog(false);
+  };
+
+  const handleDeletePhase = (phaseId: number) => {
+    if (!confirm("Are you sure you want to delete this phase?")) return;
+    deletePhase.mutate({ id: phaseId });
+  };
 
   useEffect(() => {
     if (project) {
@@ -425,9 +615,21 @@ export default function AdminProjectEdit() {
             <Card className="border-0 shadow-elegant mt-6">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Gallery Images</CardTitle>
-                <Button variant="outline" size="sm" disabled>
+                <input
+                  ref={galleryFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleGalleryFileSelect}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isNew || isUploadingGallery}
+                  onClick={() => galleryFileInputRef.current?.click()}
+                >
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Image
+                  {isUploadingGallery ? "Uploading..." : "Add Image"}
                 </Button>
               </CardHeader>
               <CardContent>
@@ -441,7 +643,12 @@ export default function AdminProjectEdit() {
                           className="w-full h-32 object-cover"
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <Button variant="destructive" size="sm">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteGalleryImage(img.id)}
+                            disabled={deleteGalleryImage.isPending}
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -452,17 +659,55 @@ export default function AdminProjectEdit() {
                   <div className="text-center py-8 text-muted-foreground">
                     <Image className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No gallery images yet</p>
+                    {isNew && <p className="text-xs mt-1">Save the project first to add gallery images</p>}
                   </div>
                 )}
               </CardContent>
             </Card>
+
+            {/* Gallery caption dialog */}
+            <Dialog open={showGalleryCaptionDialog} onOpenChange={setShowGalleryCaptionDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Gallery Image</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {pendingGalleryFile && (
+                    <p className="text-sm text-muted-foreground">
+                      File: {pendingGalleryFile.name}
+                    </p>
+                  )}
+                  <div className="space-y-2">
+                    <Label>Caption (optional)</Label>
+                    <Input
+                      value={galleryCaption}
+                      onChange={(e) => setGalleryCaption(e.target.value)}
+                      placeholder="Enter image caption..."
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowGalleryCaptionDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleGalleryUploadConfirm} disabled={isUploadingGallery}>
+                    {isUploadingGallery ? "Uploading..." : "Upload"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           <TabsContent value="timeline">
             <Card className="border-0 shadow-elegant">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Project Phases</CardTitle>
-                <Button variant="outline" size="sm" disabled>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isNew}
+                  onClick={openAddPhaseDialog}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Phase
                 </Button>
@@ -473,17 +718,41 @@ export default function AdminProjectEdit() {
                     {phases.map((phase: any, index: number) => (
                       <div key={phase.id} className="p-4 bg-secondary/50 rounded-lg">
                         <div className="flex justify-between items-start">
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <h4 className="font-medium text-foreground">{phase.name}</h4>
                             <p className="text-sm text-muted-foreground">{phase.description}</p>
+                            {(phase.startDate || phase.endDate) && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {phase.startDate && new Date(phase.startDate).toLocaleDateString()}
+                                {phase.startDate && phase.endDate && " - "}
+                                {phase.endDate && new Date(phase.endDate).toLocaleDateString()}
+                              </p>
+                            )}
                           </div>
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            phase.status === "completed" ? "bg-green-100 text-green-700" :
-                            phase.status === "in_progress" ? "bg-blue-100 text-blue-700" :
-                            "bg-muted text-muted-foreground"
-                          }`}>
-                            {phase.status}
-                          </span>
+                          <div className="flex items-center gap-2 ml-4">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              phase.status === "completed" ? "bg-green-100 text-green-700" :
+                              phase.status === "in_progress" ? "bg-blue-100 text-blue-700" :
+                              "bg-muted text-muted-foreground"
+                            }`}>
+                              {phase.status}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openEditPhaseDialog(phase)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeletePhase(phase.id)}
+                              disabled={deletePhase.isPending}
+                            >
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -492,10 +761,90 @@ export default function AdminProjectEdit() {
                   <div className="text-center py-8 text-muted-foreground">
                     <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>No phases defined yet</p>
+                    {isNew && <p className="text-xs mt-1">Save the project first to add phases</p>}
                   </div>
                 )}
               </CardContent>
             </Card>
+
+            {/* Phase add/edit dialog */}
+            <Dialog open={showPhaseDialog} onOpenChange={setShowPhaseDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{editingPhase ? "Edit Phase" : "Add Phase"}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Name *</Label>
+                    <Input
+                      value={phaseForm.name}
+                      onChange={(e) => setPhaseForm({ ...phaseForm, name: e.target.value })}
+                      placeholder="e.g. Foundation Work"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      value={phaseForm.description}
+                      onChange={(e) => setPhaseForm({ ...phaseForm, description: e.target.value })}
+                      placeholder="Describe this phase..."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select
+                      value={phaseForm.status}
+                      onValueChange={(value: "pending" | "in_progress" | "completed") =>
+                        setPhaseForm({ ...phaseForm, status: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Start Date</Label>
+                      <Input
+                        type="date"
+                        value={phaseForm.startDate}
+                        onChange={(e) => setPhaseForm({ ...phaseForm, startDate: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>End Date</Label>
+                      <Input
+                        type="date"
+                        value={phaseForm.endDate}
+                        onChange={(e) => setPhaseForm({ ...phaseForm, endDate: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowPhaseDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handlePhaseSubmit}
+                    disabled={addPhase.isPending || updatePhase.isPending}
+                  >
+                    {addPhase.isPending || updatePhase.isPending
+                      ? "Saving..."
+                      : editingPhase
+                        ? "Update Phase"
+                        : "Add Phase"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>
