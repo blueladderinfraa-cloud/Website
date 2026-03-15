@@ -9,6 +9,9 @@ import * as db from "./db-sqlite";
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 
+// In-memory OTP store
+const otpStore = new Map<string, { code: string; expiresAt: number }>();
+
 // Admin procedure
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== 'admin') {
@@ -728,14 +731,83 @@ export const appRouter = router({
   // ============ ADMIN SETTINGS ============
   adminSettings: router({
     getProfile: adminProcedure.query(async ({ ctx }) => {
-      return { name: ctx.user.name, email: ctx.user.email };
+      return { name: ctx.user.name, email: ctx.user.email, phone: ctx.user.phone };
     }),
 
     updateProfile: adminProcedure
-      .input(z.object({ name: z.string().min(1), email: z.string().min(1) }))
+      .input(z.object({ name: z.string().min(1), email: z.string().min(1), phone: z.string().optional() }))
       .mutation(async ({ ctx, input }) => {
-        await db.upsertUser({ openId: ctx.user.openId, name: input.name, email: input.email });
+        await db.upsertUser({ openId: ctx.user.openId, name: input.name, email: input.email, phone: input.phone || null });
         return { success: true };
+      }),
+
+    sendOTP: adminProcedure
+      .input(z.object({ action: z.string() }))
+      .mutation(async ({ ctx }) => {
+        // Get admin phone number from DB or use default
+        const adminUser = await db.getUserByOpenId("admin-local-dev");
+        const phone = adminUser?.phone || process.env.ADMIN_PHONE || "";
+
+        if (!phone) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No phone number configured. Add your phone in profile settings." });
+        }
+
+        // Generate 6-digit OTP
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        // Store OTP in memory (with expiry)
+        otpStore.set(ctx.user.openId, { code: otp, expiresAt: Date.now() + 5 * 60 * 1000 });
+
+        // Send SMS via Fast2SMS API
+        const apiKey = process.env.SMS_API_KEY;
+        if (apiKey) {
+          try {
+            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+              method: "POST",
+              headers: {
+                "authorization": apiKey,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                route: "otp",
+                variables_values: otp,
+                numbers: phone.replace(/\D/g, '').replace(/^91/, ''),
+                flash: "0",
+              }),
+            });
+            const data = await response.json();
+            if (!data.return) {
+              console.error("[SMS] Failed to send:", data);
+              // Fall back to returning OTP in response for display
+              return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
+            }
+            return { sent: true, phone: phone.replace(/.(?=.{4})/g, '*') };
+          } catch (error) {
+            console.error("[SMS] Error sending OTP:", error);
+            return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
+          }
+        } else {
+          // No SMS API key - show code on screen
+          return { sent: false, fallbackCode: otp, phone: phone.replace(/.(?=.{4})/g, '*') };
+        }
+      }),
+
+    verifyOTP: adminProcedure
+      .input(z.object({ code: z.string().length(6) }))
+      .mutation(async ({ ctx, input }) => {
+        const stored = otpStore.get(ctx.user.openId);
+        if (!stored) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No OTP requested. Please request a new code." });
+        }
+        if (Date.now() > stored.expiresAt) {
+          otpStore.delete(ctx.user.openId);
+          throw new TRPCError({ code: "BAD_REQUEST", message: "OTP expired. Please request a new code." });
+        }
+        if (stored.code !== input.code) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid OTP code." });
+        }
+        otpStore.delete(ctx.user.openId);
+        return { verified: true };
       }),
 
     changePassword: adminProcedure

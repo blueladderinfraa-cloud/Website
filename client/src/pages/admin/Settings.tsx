@@ -14,11 +14,7 @@ import {
 import AdminLayout from "@/components/admin/AdminLayout";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { User, Lock, Save, Loader2, ShieldCheck, KeyRound } from "lucide-react";
-
-function generateOTP(): string {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
+import { User, Lock, Save, Loader2, ShieldCheck, KeyRound, Phone, SendHorizonal } from "lucide-react";
 
 export default function AdminSettings() {
   const { data: profile, isLoading } = trpc.adminSettings.getProfile.useQuery();
@@ -26,6 +22,7 @@ export default function AdminSettings() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [profileInitialized, setProfileInitialized] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -34,15 +31,22 @@ export default function AdminSettings() {
 
   // OTP state
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
   const [otpInput, setOtpInput] = useState("");
   const [otpAction, setOtpAction] = useState<"profile" | "password" | null>(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpFallbackCode, setOtpFallbackCode] = useState<string | null>(null);
+  const [otpPhone, setOtpPhone] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
 
   if (profile && !profileInitialized) {
     setName(profile.name || "");
     setEmail(profile.email || "");
+    setPhone(profile.phone || "");
     setProfileInitialized(true);
   }
+
+  const sendOTP = trpc.adminSettings.sendOTP.useMutation();
+  const verifyOTP = trpc.adminSettings.verifyOTP.useMutation();
 
   const updateProfile = trpc.adminSettings.updateProfile.useMutation({
     onSuccess: () => {
@@ -66,8 +70,8 @@ export default function AdminSettings() {
     },
   });
 
-  const requestOTP = useCallback((action: "profile" | "password") => {
-    // Validate before showing OTP
+  const requestOTP = useCallback(async (action: "profile" | "password") => {
+    // Validate before sending OTP
     if (action === "profile") {
       if (!name.trim() || !email.trim()) {
         toast.error("Name and email are required");
@@ -89,29 +93,46 @@ export default function AdminSettings() {
       }
     }
 
-    const code = generateOTP();
-    setOtpCode(code);
-    setOtpInput("");
     setOtpAction(action);
-    setOtpDialogOpen(true);
-  }, [name, email, currentPassword, newPassword, confirmPassword]);
-
-  const verifyOTPAndSubmit = useCallback(() => {
-    if (otpInput !== otpCode) {
-      toast.error("Invalid verification code. Please try again.");
-      setOtpInput("");
-      return;
-    }
-
-    setOtpDialogOpen(false);
     setOtpInput("");
+    setOtpSending(true);
+    setOtpFallbackCode(null);
+    setOtpSent(false);
 
-    if (otpAction === "profile") {
-      updateProfile.mutate({ name: name.trim(), email: email.trim() });
-    } else if (otpAction === "password") {
-      changePassword.mutate({ currentPassword, newPassword });
+    try {
+      const result = await sendOTP.mutateAsync({ action });
+      setOtpPhone(result.phone);
+      if (result.sent) {
+        setOtpSent(true);
+        setOtpFallbackCode(null);
+      } else {
+        setOtpSent(false);
+        setOtpFallbackCode(result.fallbackCode || null);
+      }
+      setOtpDialogOpen(true);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send OTP");
+    } finally {
+      setOtpSending(false);
     }
-  }, [otpInput, otpCode, otpAction, name, email, currentPassword, newPassword, updateProfile, changePassword]);
+  }, [name, email, currentPassword, newPassword, confirmPassword, sendOTP]);
+
+  const handleVerifyAndSubmit = useCallback(async () => {
+    try {
+      await verifyOTP.mutateAsync({ code: otpInput });
+      setOtpDialogOpen(false);
+      setOtpInput("");
+
+      if (otpAction === "profile") {
+        updateProfile.mutate({ name: name.trim(), email: email.trim(), phone: phone.trim() || undefined });
+      } else if (otpAction === "password") {
+        changePassword.mutate({ currentPassword, newPassword });
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Invalid verification code");
+      setOtpInput("");
+    }
+  }, [otpInput, otpAction, name, email, phone, currentPassword, newPassword, verifyOTP, updateProfile, changePassword]);
 
   const handleUpdateProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,7 +166,7 @@ export default function AdminSettings() {
               </div>
               <div>
                 <CardTitle className="text-xl">Profile</CardTitle>
-                <CardDescription>Update your display name and login username</CardDescription>
+                <CardDescription>Update your display name, login username, and phone</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -172,12 +193,24 @@ export default function AdminSettings() {
                 />
                 <p className="text-xs text-muted-foreground">This is used as your login username</p>
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="font-medium">Phone Number (for OTP)</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 7778870070"
+                  className="h-11"
+                />
+                <p className="text-xs text-muted-foreground">OTP verification codes will be sent to this number</p>
+              </div>
               <Button
                 type="submit"
-                disabled={updateProfile.isPending}
+                disabled={updateProfile.isPending || otpSending}
                 className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                {updateProfile.isPending ? (
+                {(updateProfile.isPending || otpSending) ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
                   <Save className="w-5 h-5 mr-2" />
@@ -238,10 +271,10 @@ export default function AdminSettings() {
               </div>
               <Button
                 type="submit"
-                disabled={changePassword.isPending}
+                disabled={changePassword.isPending || otpSending}
                 className="w-full h-12 text-base font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
-                {changePassword.isPending ? (
+                {(changePassword.isPending || otpSending) ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
                   <Lock className="w-5 h-5 mr-2" />
@@ -259,7 +292,7 @@ export default function AdminSettings() {
               <ShieldCheck className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
               <div className="text-sm text-green-800">
                 <p className="font-semibold mb-1">OTP Verification Enabled</p>
-                <p>All profile and password changes require a one-time verification code for security. A 6-digit code will be generated when you save changes.</p>
+                <p>All profile and password changes require a one-time verification code sent to your registered phone number for security.</p>
               </div>
             </div>
           </CardContent>
@@ -275,23 +308,36 @@ export default function AdminSettings() {
               Verify Your Identity
             </DialogTitle>
             <DialogDescription>
-              Enter the verification code below to confirm your changes.
+              {otpSent
+                ? `A 6-digit OTP has been sent to ${otpPhone}`
+                : "Enter the verification code below to confirm your changes."
+              }
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-5 py-4">
-            {/* Display OTP */}
-            <div className="bg-slate-100 rounded-xl p-5 text-center">
-              <p className="text-sm text-muted-foreground mb-2">Your verification code</p>
-              <div className="text-4xl font-mono font-bold tracking-[0.5em] text-primary">
-                {otpCode}
+            {/* Show OTP status */}
+            {otpSent ? (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                <SendHorizonal className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-green-800">OTP sent to your phone</p>
+                <p className="text-xs text-green-600 mt-1">{otpPhone}</p>
+                <p className="text-xs text-muted-foreground mt-2">Code expires in 5 minutes</p>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">This code is valid for this session only</p>
-            </div>
+            ) : otpFallbackCode ? (
+              <div className="bg-slate-100 rounded-xl p-5 text-center">
+                <Phone className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-2">Your verification code</p>
+                <div className="text-4xl font-mono font-bold tracking-[0.5em] text-primary">
+                  {otpFallbackCode}
+                </div>
+                <p className="text-xs text-amber-600 mt-3">SMS not configured. Set SMS_API_KEY in Railway to enable SMS delivery.</p>
+              </div>
+            ) : null}
 
             {/* OTP Input */}
             <div className="space-y-2">
-              <Label htmlFor="otpInput" className="font-medium">Enter Code</Label>
+              <Label htmlFor="otpInput" className="font-medium">Enter OTP Code</Label>
               <Input
                 id="otpInput"
                 value={otpInput}
@@ -313,11 +359,15 @@ export default function AdminSettings() {
               Cancel
             </Button>
             <Button
-              onClick={verifyOTPAndSubmit}
-              disabled={otpInput.length !== 6}
+              onClick={handleVerifyAndSubmit}
+              disabled={otpInput.length !== 6 || verifyOTP.isPending}
               className="h-11 bg-green-600 hover:bg-green-700 text-white font-semibold"
             >
-              <ShieldCheck className="w-4 h-4 mr-2" />
+              {verifyOTP.isPending ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <ShieldCheck className="w-4 h-4 mr-2" />
+              )}
               Verify & Save
             </Button>
           </DialogFooter>
