@@ -725,6 +725,49 @@ export const appRouter = router({
       }),
   }),
 
+  // ============ ADMIN SETTINGS ============
+  adminSettings: router({
+    getProfile: adminProcedure.query(async ({ ctx }) => {
+      return { name: ctx.user.name, email: ctx.user.email };
+    }),
+
+    updateProfile: adminProcedure
+      .input(z.object({ name: z.string().min(1), email: z.string().min(1) }))
+      .mutation(async ({ ctx, input }) => {
+        await db.upsertUser({ openId: ctx.user.openId, name: input.name, email: input.email });
+        return { success: true };
+      }),
+
+    changePassword: adminProcedure
+      .input(z.object({ currentPassword: z.string().min(1), newPassword: z.string().min(6) }))
+      .mutation(async ({ ctx, input }) => {
+        // Verify current password first
+        const settings = await db.getSiteContent('admin_settings');
+        const storedHash = settings?.find((s: any) => s.key === 'password_hash')?.value;
+
+        const adminEmail = process.env.ADMIN_EMAIL || "admin";
+        const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+
+        // Check current password against DB hash or env var
+        let currentValid = false;
+        if (storedHash) {
+          currentValid = Buffer.from(input.currentPassword).toString('base64') === storedHash;
+        } else {
+          currentValid = input.currentPassword === adminPassword;
+        }
+
+        if (!currentValid) {
+          throw new TRPCError({ code: 'BAD_REQUEST', message: "Current password is incorrect" });
+        }
+
+        // Store new password hash
+        const newHash = Buffer.from(input.newPassword).toString('base64');
+        await db.upsertSiteContent({ section: 'admin_settings', key: 'password_hash', value: newHash, type: 'text' });
+
+        return { success: true };
+      }),
+  }),
+
   // ============ DASHBOARD ============
   dashboard: router({
     stats: adminProcedure.query(async () => {

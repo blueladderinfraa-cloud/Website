@@ -22,6 +22,7 @@ const navItems: NavItem[] = [
   { href: "/admin/services", label: "Services" },
   { href: "/admin/testimonials", label: "Testimonials" },
   { href: "/admin/users", label: "Users" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 export default function AdminNavigation({ currentPage }: AdminNavigationProps) {

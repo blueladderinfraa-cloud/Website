@@ -102,7 +102,25 @@ export function registerOAuthRoutes(app: Express) {
       return;
     }
 
-    if (!validCredentials[username] || validCredentials[username] !== password) {
+    // Check DB for stored credentials first, then fall back to env vars
+    let isValid = false;
+    const adminSettings = await db.getSiteContent('admin_settings');
+    const storedHash = adminSettings?.find((s: any) => s.key === 'password_hash')?.value;
+    const existingAdminUser = await db.getUserByOpenId("admin-local-dev");
+
+    if (storedHash) {
+      // Check against stored hash - accept both env email and DB-stored email
+      const validUsernames = [adminEmail];
+      if (existingAdminUser?.email && !validUsernames.includes(existingAdminUser.email)) {
+        validUsernames.push(existingAdminUser.email);
+      }
+      isValid = validUsernames.includes(username) && Buffer.from(password).toString('base64') === storedHash;
+    } else {
+      // Fall back to env var credentials
+      isValid = validCredentials[username] === password;
+    }
+
+    if (!isValid) {
       res.status(401).json({ error: "Invalid username or password" });
       return;
     }

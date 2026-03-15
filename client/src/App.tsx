@@ -40,6 +40,7 @@ import AdminContent from "./pages/admin/Content";
 import AdminSubcontractors from "./pages/admin/Subcontractors";
 import AdminTenders from "./pages/admin/Tenders";
 import AdminUsers from "./pages/admin/Users";
+import AdminSettings from "./pages/admin/Settings";
 
 function Router() {
   return (
@@ -73,6 +74,7 @@ function Router() {
       <Route path="/admin/subcontractors" component={AdminSubcontractors} />
       <Route path="/admin/tenders" component={AdminTenders} />
       <Route path="/admin/users" component={AdminUsers} />
+      <Route path="/admin/settings" component={AdminSettings} />
       
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
