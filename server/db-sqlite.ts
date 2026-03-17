@@ -229,7 +229,10 @@ function initializeTables(sqlite: InstanceType<typeof Database>) {
 export async function getDb() {
   if (!_db) {
     try {
-      const sqlite = new Database('./local.db');
+      // Use persistent volume path in production, local file in development
+      const dbPath = process.env.DATABASE_PATH || './local.db';
+      console.log(`[Database] Using database at: ${dbPath}`);
+      const sqlite = new Database(dbPath);
       if (!_initialized) {
         initializeTables(sqlite);
         _initialized = true;

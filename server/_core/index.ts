@@ -37,9 +37,10 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   
   // Serve uploaded files statically
-  const uploadsPath = process.env.NODE_ENV === "production"
-    ? path.join(process.cwd(), "dist", "public", "uploads")
-    : path.join(process.cwd(), "client", "public", "uploads");
+  const uploadsPath = process.env.UPLOADS_PATH
+    || (process.env.NODE_ENV === "production"
+      ? path.join(process.cwd(), "dist", "public", "uploads")
+      : path.join(process.cwd(), "client", "public", "uploads"));
   app.use("/uploads", express.static(uploadsPath));
   console.log("[Server] Serving uploads from:", uploadsPath);
   
