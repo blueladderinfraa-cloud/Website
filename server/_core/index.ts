@@ -64,14 +64,26 @@ async function startServer() {
   });
   
   // Serve SEO files explicitly before SPA fallback
-  const publicDir = process.env.NODE_ENV === "production"
-    ? path.resolve(process.cwd(), "dist", "public")
-    : path.resolve(process.cwd(), "client", "public");
+  // Try multiple possible paths to find the files
+  const possibleDirs = [
+    path.resolve(import.meta.dirname, "public"),
+    path.resolve(process.cwd(), "dist", "public"),
+    path.resolve(import.meta.dirname, "../..", "client", "public"),
+    path.resolve(process.cwd(), "client", "public"),
+  ];
 
   for (const file of ["robots.txt", "sitemap.xml", "llms.txt"]) {
     app.get(`/${file}`, (req, res) => {
-      const filePath = path.join(publicDir, file);
-      res.sendFile(filePath);
+      const fs = require("fs");
+      for (const dir of possibleDirs) {
+        const filePath = path.join(dir, file);
+        if (fs.existsSync(filePath)) {
+          console.log(`[Server] Serving ${file} from:`, filePath);
+          return res.sendFile(filePath);
+        }
+      }
+      console.error(`[Server] ${file} not found in any directory`);
+      res.status(404).send("Not found");
     });
   }
 
