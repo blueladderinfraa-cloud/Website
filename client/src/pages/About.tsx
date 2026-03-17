@@ -133,22 +133,22 @@ export default function About() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <img
+              <img loading="lazy"
                 src={aboutContent.image || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop"}
                 alt="Construction site"
                 className="rounded-xl shadow-elegant w-full h-48 object-cover"
               />
-              <img
+              <img loading="lazy"
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop"
                 alt="Team at work"
                 className="rounded-xl shadow-elegant w-full h-48 object-cover md:mt-8"
               />
-              <img
+              <img loading="lazy"
                 src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop"
                 alt="Completed building"
                 className="rounded-xl shadow-elegant w-full h-48 object-cover"
               />
-              <img
+              <img loading="lazy"
                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
                 alt="Modern construction"
                 className="rounded-xl shadow-elegant w-full h-48 object-cover md:mt-8"
@@ -272,7 +272,7 @@ export default function About() {
             {teamContent.team.map((member) => (
               <Card key={member.name} className="border-0 shadow-elegant overflow-hidden group">
                 <div className="relative h-64 overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

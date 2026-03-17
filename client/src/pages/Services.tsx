@@ -142,7 +142,7 @@ export default function Services() {
                 >
                   <div className={isEven ? 'lg:order-1' : 'lg:order-2'}>
                     <div className="relative rounded-2xl overflow-hidden shadow-elegant-lg">
-                      <img
+                      <img loading="lazy"
                         src={service.image}
                         alt={service.title}
                         className="w-full h-[400px] object-cover"

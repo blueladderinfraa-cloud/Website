@@ -201,7 +201,7 @@ export default function Projects() {
                 <Link key={project.id} href={`/projects/${project.slug}`}>
                   <Card className="group overflow-hidden hover-lift border-0 shadow-elegant cursor-pointer h-full">
                     <div className="relative h-64 overflow-hidden">
-                      <img
+                      <img loading="lazy"
                         src={project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop"}
                         alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

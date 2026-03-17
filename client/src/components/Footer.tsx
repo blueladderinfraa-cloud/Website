@@ -24,10 +24,9 @@ const services = [
 ];
 
 const socialLinks = [
-  { icon: "facebook", href: "#", label: "Facebook" },
-  { icon: "twitter", href: "#", label: "Twitter" },
-  { icon: "linkedin", href: "#", label: "LinkedIn" },
-  { icon: "instagram", href: "#", label: "Instagram" },
+  { icon: "facebook", href: "https://www.facebook.com/blueladderinfra", label: "Facebook", path: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" },
+  { icon: "instagram", href: "https://www.instagram.com/blueladderinfra", label: "Instagram", path: "M16 4H8a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4zm-4 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3.5-7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" },
+  { icon: "linkedin", href: "https://www.linkedin.com/company/blueladderinfra", label: "LinkedIn", path: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" },
 ];
 
 export default function Footer() {
@@ -68,7 +67,7 @@ export default function Footer() {
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
                   aria-label={social.label}
                 >
-                  <span className="text-sm font-bold">{social.icon.charAt(0).toUpperCase()}</span>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d={social.path} /></svg>
                 </a>
               ))}
             </div>

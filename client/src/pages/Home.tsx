@@ -229,7 +229,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-elegant-lg">
-                <img
+                <img loading="lazy"
                   src={aboutContent.image}
                   alt="Construction site"
                   className="w-full h-[400px] object-cover"
@@ -299,7 +299,7 @@ export default function Home() {
               return (
                 <Card key={service.category} className="group overflow-hidden hover-lift border-0 shadow-elegant">
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <img loading="lazy"
                       src={service.image}
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -374,7 +374,7 @@ export default function Home() {
               <Link key={project.id} href={`/projects/${project.slug}`}>
                 <Card className="group overflow-hidden hover-lift border-0 shadow-elegant cursor-pointer">
                   <div className="relative h-64 overflow-hidden">
-                    <img
+                    <img loading="lazy"
                       src={project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop"}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -455,7 +455,7 @@ export default function Home() {
                   </blockquote>
                   <div className="flex items-center gap-4">
                     {testimonials[currentTestimonial].clientImage ? (
-                      <img
+                      <img loading="lazy"
                         src={testimonials[currentTestimonial].clientImage}
                         alt={testimonials[currentTestimonial].clientName}
                         className="w-14 h-14 rounded-full object-cover"

@@ -32,9 +32,11 @@
     <meta name="geo.region" content="IN-GJ" />
     <meta name="geo.placename" content="Gujarat, India" />
 
-    <!-- Favicon -->
+    <!-- Favicon & PWA -->
     <link rel="icon" type="image/jpeg" href="/logo.jpg" />
     <link rel="apple-touch-icon" href="/logo.jpg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1e40af" />
 
     <!-- Structured Data - Organization -->
     <script type="application/ld+json">
@@ -81,15 +83,21 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Analytics script - only load if endpoint is configured -->
+    <!-- Google Analytics - only load if GA ID is configured -->
     <script>
-      if ('%VITE_ANALYTICS_ENDPOINT%' && '%VITE_ANALYTICS_ENDPOINT%' !== '' && !('%VITE_ANALYTICS_ENDPOINT%'.startsWith('%'))) {
-        const script = document.createElement('script');
-        script.defer = true;
-        script.src = '%VITE_ANALYTICS_ENDPOINT%/umami';
-        script.setAttribute('data-website-id', '%VITE_ANALYTICS_WEBSITE_ID%');
-        document.head.appendChild(script);
-      }
+      (function() {
+        var gaId = '%VITE_GA_ID%';
+        if (gaId && gaId !== '' && !gaId.startsWith('%')) {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        }
+      })();
     </script>
   </body>
 

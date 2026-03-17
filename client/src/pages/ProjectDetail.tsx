@@ -69,7 +69,7 @@ function BeforeAfterSlider({ beforeImage, afterImage }: { beforeImage: string; a
       onTouchMove={handleTouchMove}
     >
       {/* After Image (Background) */}
-      <img
+      <img loading="lazy"
         src={afterImage}
         alt="After"
         className="absolute inset-0 w-full h-full object-cover"
@@ -80,7 +80,7 @@ function BeforeAfterSlider({ beforeImage, afterImage }: { beforeImage: string; a
         className="absolute inset-0 overflow-hidden"
         style={{ width: `${sliderPosition}%` }}
       >
-        <img
+        <img loading="lazy"
           src={beforeImage}
           alt="Before"
           className="absolute inset-0 w-full h-full object-cover"
@@ -261,7 +261,7 @@ export default function ProjectDetail() {
                   <div className="relative rounded-xl overflow-hidden h-[400px]">
                     <div className="relative w-full h-full">
                       {displayImages.map((img: any, index: number) => (
-                        <img
+                        <img loading="lazy"
                           key={img.id}
                           src={img.imageUrl}
                           alt={img.caption ?? displayProject.title}
@@ -322,7 +322,7 @@ export default function ProjectDetail() {
                             index === currentImageIndex ? "border-primary" : "border-transparent"
                           }`}
                         >
-                          <img
+                          <img loading="lazy"
                             src={img.imageUrl}
                             alt={img.caption ?? `Image ${index + 1}`}
                             className="w-full h-full object-cover"
