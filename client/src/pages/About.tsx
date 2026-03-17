@@ -221,7 +221,7 @@ export default function About() {
       </section>
 
       {/* Timeline */}
-      <section className="section-padding gradient-dark">
+      <section className="section-padding bg-[#0a1628]">
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-accent font-semibold text-sm uppercase tracking-wider">Our Journey</span>
