@@ -364,7 +364,7 @@ export default function Contact() {
       {/* Map Section */}
       <section className="h-[400px] bg-muted">
         <iframe
-          src={generateMapEmbedUrlFallback(cleanAddressForMap(contactContent.address))}
+          src="https://maps.google.com/maps?q=21.1860,72.8235&t=&z=17&ie=UTF8&iwloc=&output=embed"
           width="100%"
           height="100%"
           style={{ border: 0 }}
