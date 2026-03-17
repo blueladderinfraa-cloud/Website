@@ -308,7 +308,7 @@ function seedDatabase(sqlite: InstanceType<typeof Database>) {
 
   sqlite.exec(`
     INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
-    (7, 'contact', 'content', '{"address":"G-20, Canal Walk Shoppers, B/s Palanpur Bus Station, Nr. Royal Dine Restaurant, Palanpur Canal Road, Surat, Gujarat 395009.","phone1":"+91 7778849470","phone2":"+91 9033861812","email1":"blueladderinfraa@gmail.com","hours":"Monday - Saturday: 9:00 AM - 6:00 PM\nSunday: Closed"}', 'json', 1768044305);
+    (7, 'contact', 'content', '{"address":"G-20, Canal Walk Shoppers, B/s Palanpur Bus Station, Palanpur Canal Road, Surat, Gujarat 395009.","phone1":"+91 7778849470","phone2":"+91 9033861812","email1":"blueladderinfraa@gmail.com","hours":"Monday - Saturday: 9:00 AM - 6:00 PM\nSunday: Closed"}', 'json', 1768044305);
   `);
 
   sqlite.exec(`

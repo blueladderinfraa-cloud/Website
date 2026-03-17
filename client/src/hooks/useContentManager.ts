@@ -94,7 +94,7 @@ export function useContentManager() {
     const contactData = getContent("contact", "content", {});
 
     return {
-      address: contactData.address || "G-20, Canal Walk Shoppers, B/s Palanpur Bus Station, Nr. Royal Dine Restaurant, Palanpur Canal Road, Surat, Gujarat 395009.",
+      address: contactData.address || "G-20, Canal Walk Shoppers, B/s Palanpur Bus Station, Palanpur Canal Road, Surat, Gujarat 395009.",
       phone1: contactData.phone1 || "+91 7778849470",
       phone2: contactData.phone2 || "+91 9033861812",
       email1: contactData.email1 || "blueladderinfraa@gmail.com",
