@@ -64,28 +64,80 @@ async function startServer() {
     res.status(404).json({ error: 'API endpoint not found', path: req.originalUrl });
   });
   
-  // Serve SEO files explicitly before SPA fallback
-  // Try multiple possible paths to find the files
-  const possibleDirs = [
-    path.resolve(import.meta.dirname, "public"),
-    path.resolve(process.cwd(), "dist", "public"),
-    path.resolve(import.meta.dirname, "../..", "client", "public"),
-    path.resolve(process.cwd(), "client", "public"),
-  ];
+  // Serve SEO files inline (avoids file path issues in production)
+  app.get("/robots.txt", (req, res) => {
+    res.type("text/plain").send(`# Blueladder Infra - Construction Company
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-access
+Disallow: /admin-login
+Disallow: /go-admin
+Disallow: /api/
 
-  for (const file of ["robots.txt", "sitemap.xml", "llms.txt"]) {
-    app.get(`/${file}`, (req, res) => {
-      for (const dir of possibleDirs) {
-        const filePath = path.join(dir, file);
-        if (fs.existsSync(filePath)) {
-          console.log(`[Server] Serving ${file} from:`, filePath);
-          return res.sendFile(filePath);
-        }
-      }
-      console.error(`[Server] ${file} not found in any directory`);
-      res.status(404).send("Not found");
-    });
-  }
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://blueladderinfra.in/sitemap.xml
+`);
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://blueladderinfra.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://blueladderinfra.in/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://blueladderinfra.in/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://blueladderinfra.in/projects</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://blueladderinfra.in/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://blueladderinfra.in/cost-estimator</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+</urlset>`);
+  });
+
+  app.get("/llms.txt", (req, res) => {
+    res.type("text/plain").send(`# Blueladder Infra
+> Leading construction company in Gujarat, India with 18+ years of experience.
+
+## Services
+- Residential Construction: Homes, apartments, villas
+- Commercial Construction: Offices, retail spaces, malls
+- Industrial Construction: Factories, warehouses
+- Infrastructure Development: Roads, bridges
+
+## Pages
+- Home: https://blueladderinfra.in/
+- About: https://blueladderinfra.in/about
+- Services: https://blueladderinfra.in/services
+- Projects: https://blueladderinfra.in/projects
+- Cost Estimator: https://blueladderinfra.in/cost-estimator
+- Contact: https://blueladderinfra.in/contact
+
+## Contact
+- Phone: +91 7778870070
+- Location: Gujarat, India
+`);
+  });
 
   console.log("[Server] Setting up static/Vite serving...");
   // AFTER all API routes are registered, set up Vite/static serving
