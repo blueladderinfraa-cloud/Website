@@ -26,11 +26,11 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs', '@radix-ui/react-slot'],
-          'vendor-motion': ['framer-motion'],
-          'vendor-charts': ['recharts'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom')) return 'vendor-react';
+          if (id.includes('node_modules/react/')) return 'vendor-react';
+          if (id.includes('node_modules/framer-motion')) return 'vendor-motion';
+          if (id.includes('node_modules/recharts')) return 'vendor-charts';
         },
       },
     },
