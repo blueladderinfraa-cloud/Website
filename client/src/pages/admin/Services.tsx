@@ -188,7 +188,7 @@ export default function AdminServices() {
 
   return (
     <AdminLayout 
-      currentPage="/admin/services" 
+      currentPage="services"
       title="Services" 
       description="Manage your service offerings and website content"
     >

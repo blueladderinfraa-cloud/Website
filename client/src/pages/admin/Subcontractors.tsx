@@ -44,15 +44,15 @@ export default function AdminSubcontractors() {
       toast.success("Status updated!");
       utils.subcontractors.list.invalidate();
     },
-    onError: () => {
-      toast.error("Failed to update status");
+    onError: (error) => {
+      toast.error(error.message || "Failed to update status");
     },
   });
 
   const filteredSubcontractors = subcontractors?.filter((s: any) => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      if (!s.companyName.toLowerCase().includes(query) && !s.contactName.toLowerCase().includes(query)) {
+      if (!(s.companyName || "").toLowerCase().includes(query) && !(s.contactName || "").toLowerCase().includes(query)) {
         return false;
       }
     }
@@ -62,7 +62,7 @@ export default function AdminSubcontractors() {
 
   return (
     <AdminLayout 
-      currentPage="/admin/subcontractors" 
+      currentPage="subcontractors"
       title="Subcontractors" 
       description="Manage subcontractor registrations and applications"
     >

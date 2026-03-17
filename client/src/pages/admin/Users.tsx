@@ -40,8 +40,8 @@ export default function AdminUsers() {
       toast.success("User role updated!");
       utils.users.list.invalidate();
     },
-    onError: () => {
-      toast.error("Failed to update role");
+    onError: (error) => {
+      toast.error(error.message || "Failed to update role");
     },
   });
 
@@ -156,6 +156,7 @@ export default function AdminUsers() {
                           <div className="flex items-center gap-2">
                             <Select
                               value={u.role}
+                              disabled={updateRole.isPending}
                               onValueChange={(value: "admin" | "client" | "subcontractor" | "user") => {
                                 updateRole.mutate({ userId: u.id, role: value });
                               }}

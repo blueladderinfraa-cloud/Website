@@ -78,7 +78,7 @@ export default function AdminNavigation({ currentPage }: AdminNavigationProps) {
 
           {/* Mobile Menu Dropdown */}
           {isMobileMenuOpen && (
-            <div className="border-t border-gray-200 bg-white">
+            <div className="border-t border-border bg-white">
               <div className="py-2 space-y-1">
                 {navItems.map((item) => {
                   const pageName = item.href === "/admin" ? "dashboard" : item.href.split("/").pop() || "";

@@ -152,7 +152,7 @@ export default function AdminInquiries() {
 
   return (
     <AdminLayout 
-      currentPage="/admin/inquiries" 
+      currentPage="inquiries"
       title="Inquiries" 
       description="Manage quote requests and contact form submissions"
     >

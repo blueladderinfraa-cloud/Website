@@ -366,11 +366,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "about" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>About Us Section</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">About Us Section</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="space-y-2">
                     <Label>Section Title</Label>
                     <Input
@@ -417,7 +417,7 @@ export default function AdminContent() {
                       mission: content.about_mission,
                       image: content.about_image,
                     })}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -428,11 +428,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "services" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Services Section</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Services Section</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="space-y-2">
                     <Label>Section Title</Label>
                     <Input
@@ -495,7 +495,7 @@ export default function AdminContent() {
                       
                       handleSave("services", "content", servicesData);
                     }}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -506,11 +506,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "team" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Team Members Management</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Team Members Management</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="space-y-2">
                     <Label>Team Section Title</Label>
                     <Input
@@ -618,7 +618,7 @@ export default function AdminContent() {
                       
                       handleSave("team", "content", teamData);
                     }}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -629,11 +629,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "testimonials" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Testimonials Management</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Testimonials Management</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="space-y-2">
                     <Label>Section Title</Label>
                     <Input
@@ -728,7 +728,7 @@ export default function AdminContent() {
                       
                       handleSave("testimonials", "content", testimonialsData);
                     }}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -739,11 +739,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "stats" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Statistics Section</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Statistics Section</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Projects Completed</Label>
@@ -785,7 +785,7 @@ export default function AdminContent() {
                       clients: content.stat_clients,
                       years: content.stat_years,
                     })}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />
@@ -1023,11 +1023,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "contact" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Contact Information</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Contact Information</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="space-y-2">
                     <Label>Company Address</Label>
                     <Textarea
@@ -1125,11 +1125,11 @@ export default function AdminContent() {
             )}
 
             {activeSection === "branding" && (
-              <Card className="border-0 shadow-elegant">
-                <CardHeader>
-                  <CardTitle>Branding & Logo Management</CardTitle>
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="admin-card-title">Branding & Logo Management</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="admin-card-content space-y-6">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <div className="flex items-start gap-2">
                       <Info className="h-4 w-4 text-blue-500 mt-0.5" />
@@ -1280,7 +1280,7 @@ export default function AdminContent() {
                       logoAlt: content.branding_logo_alt,
                       companyName: content.branding_company_name,
                     })}
-                    className="gradient-primary text-white"
+                    className="admin-button-primary"
                     disabled={isSaving}
                   >
                     <Save className="w-4 h-4 mr-2" />

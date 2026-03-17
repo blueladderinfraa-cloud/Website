@@ -192,7 +192,7 @@ export default function AdminProjects() {
 
   return (
     <AdminLayout 
-      currentPage="/admin/projects" 
+      currentPage="projects"
       title="Projects" 
       description="Manage your construction projects"
     >
