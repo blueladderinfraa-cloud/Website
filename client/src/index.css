@@ -832,3 +832,32 @@ img[src*=".jpg"], img[src*=".jpeg"] {
   backdrop-filter: blur(6px) !important;
   -webkit-backdrop-filter: blur(6px) !important;
 }
+
+/* Force white background on ALL dropdowns, popovers, selects, and dialogs */
+[data-radix-select-content],
+[data-radix-popper-content-wrapper] [data-slot="select-content"],
+[data-radix-popper-content-wrapper] [role="listbox"],
+[data-radix-menu-content],
+[data-radix-dropdown-menu-content],
+[data-radix-popover-content],
+[data-slot="select-content"],
+[data-slot="dialog-content"],
+[role="dialog"],
+[data-radix-alert-dialog-content] {
+  background: white !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Ensure select items have proper hover/focus colors */
+[data-slot="select-item"]:hover,
+[data-slot="select-item"][data-highlighted] {
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+[data-slot="select-item"][data-state="checked"] {
+  background: #eff6ff !important;
+  color: #1e40af !important;
+}
