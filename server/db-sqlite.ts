@@ -224,6 +224,104 @@ function initializeTables(sqlite: InstanceType<typeof Database>) {
     );
   `);
   console.log("[Database] All tables initialized successfully");
+
+  // Seed data if database is empty
+  const projectCount = sqlite.prepare("SELECT COUNT(*) as cnt FROM projects").get() as any;
+  if (projectCount?.cnt === 0) {
+    console.log("[Database] Empty database detected - seeding with Blueladder data...");
+    seedDatabase(sqlite);
+  }
+}
+
+function seedDatabase(sqlite: InstanceType<typeof Database>) {
+  // ===== ADMIN USER =====
+  sqlite.exec(`
+    INSERT OR IGNORE INTO users (openId, name, email, loginMethod, role, createdAt, updatedAt, lastSignedIn)
+    VALUES ('admin-local-dev', 'Admin User', 'admin@blueladder.com', 'local', 'admin', 1767705908, 1767705908, 1767705908);
+  `);
+
+  // ===== PROJECTS =====
+  sqlite.exec(`
+    INSERT INTO projects (id, title, slug, description, location, clientName, clientId, status, category, featured, startDate, endDate, budget, sqftBuilt, progress, beforeImage, afterImage, coverImage, createdAt, updatedAt) VALUES
+    (1, 'Pranav Buiness Point', 'Luxury Commercial complex', 'A premium Commercial development featuring modern large space of offices', 'Surat, Gujarat', '', '', 'ongoing', 'commercial', 1, NULL, NULL, '2500000', '25000', 65, '', '', '/uploads/images/1-CZYnIRHBrXdy9LwVelt18.jpg', 1767705908, 1767705908),
+    (2, 'Residential', 'Luxury Smart Bungalow', '"Precision in every curve. From the first digital stroke to the final brick, we build exactly what we dream."', 'Surat', '', '', 'completed', 'residential', 1, NULL, NULL, '5000000', '50000', 100, '', '', '/uploads/images/1-jwwBNy02bDaaGXFymjm29.jpg', 1767705908, 1767705908),
+    (3, 'Industrial', 'Textile Machinery', 'Modern warehouse and distribution center with automated systems.', 'Industrial Zone', '', '', 'ongoing', 'industrial', 0, NULL, NULL, '3500000', '75000', 0, '', '', 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800', 1767705908, 1767705908),
+    (5, 'Sanctum Palacio', 'Abhishek Builders', '2BHK and 3BHK Fully Residential Projects, Which total Square Feet Area is 5 lakh.', 'Pal-Palanpur Gauravpath Road', '', '', 'ongoing', 'residential', 1, NULL, NULL, NULL, NULL, 0, '', '', '/uploads/images/1-_FBtgc0PoRV0qWhfK1Wz6.jpg', 1768219603, 1768219603),
+    (6, 'Sayan Textile Park- Industrial ', 'Light Manufacturing Unit', '"We don''t just build walls; we craft identities."', 'Icchapur, Surat', '', '', 'completed', 'industrial', 0, NULL, NULL, NULL, NULL, 0, '', '', '/uploads/images/1-yOUbmZkzk74rYmgugaVhe.jpg', 1768220102, 1768220102),
+    (7, 'Bansri Laxuria', 'The Residential Project', '', 'Surat', '', '', 'completed', 'residential', 0, NULL, NULL, NULL, NULL, 0, '', '', '/uploads/images/1--ZUq9HLnMJHJ8KL7Ec6qw.jpg', 1772709070, 1772709070);
+  `);
+
+  // ===== PROJECT IMAGES =====
+  sqlite.exec(`
+    INSERT INTO projectImages (id, projectId, imageUrl, caption, sortOrder, createdAt) VALUES
+    (1, 5, '/uploads/images/1-FKqJz4moeZji3kUTU5A-p.jpg', '', 0, 1768238725),
+    (2, 5, '/uploads/images/1-wVWTa7NUpT42Gj9hZPsoP.jpg', '', 1, 1768238725),
+    (3, 5, '/uploads/images/1-D9z0X9gRmGPWOh3Fo7USp.jpg', '', 2, 1768238725),
+    (4, 5, '/uploads/images/1-noVA-MulRgA_q9-SHwHSd.jpg', '', 3, 1768238725),
+    (5, 5, '/uploads/images/1-qsnssk_xwj_gjirjozrDM.jpg', '', 4, 1768238725),
+    (6, 1, '/uploads/images/1-br2bjWa8xagtScKgtTUp2.jpg', '', 0, 1772692278),
+    (7, 2, '/uploads/images/1-Dt7k7UyXU90XvTxuPW6PO.jpg', '', 0, 1772692779),
+    (8, 6, '/uploads/images/1-yOUbmZkzk74rYmgugaVhe.jpg', '', 0, 1772705798),
+    (9, 1, '/uploads/images/1-CZYnIRHBrXdy9LwVelt18.jpg', '', 0, 1772705850),
+    (10, 1, '/uploads/images/1-esBjwQrfQS14N9E_joKxq.jpg', '', 1, 1772705850),
+    (11, 2, '/uploads/images/1-jwwBNy02bDaaGXFymjm29.jpg', '', 0, 1772705900),
+    (12, 2, '/uploads/images/1-DJb1O3HhvGLjBxPCpKQhJ.jpg', '', 1, 1772705900),
+    (13, 7, '/uploads/images/1--ZUq9HLnMJHJ8KL7Ec6qw.jpg', '', 0, 1772709071),
+    (14, 7, '/uploads/images/1-RyGLlVC7H-8IYnW7d4vXS.jpg', '', 1, 1772709071),
+    (15, 7, '/uploads/images/1-rrEDWAtOVPJn3dYohyD_U.jpg', '', 2, 1772709071);
+  `);
+
+  // ===== SERVICES =====
+  sqlite.exec(`
+    INSERT INTO services (id, title, slug, shortDescription, fullDescription, icon, image, category, features, isActive, sortOrder, createdAt, updatedAt) VALUES
+    (1, 'Residential Construction', 'residential-construction', 'Custom homes and residential developments', 'We specialize in building custom homes, residential complexes, and housing developments with attention to detail and quality craftsmanship.', 'Home', '', 'residential', '["Custom Design","Quality Materials","Timely Delivery","Warranty Support"]', 1, 1, 1767705908, 1767705908),
+    (2, 'Commercial Construction', 'commercial-construction', 'Office buildings and commercial spaces', 'From office towers to retail spaces, we deliver commercial construction projects that meet modern business needs.', 'Building', '', 'commercial', '["Modern Design","Smart Building Tech","Energy Efficient","Code Compliance"]', 1, 2, 1767705908, 1767705908),
+    (3, 'Industrial Construction', 'industrial-construction', 'Warehouses and manufacturing facilities', 'Specialized in industrial construction including warehouses, manufacturing plants, and distribution centers.', 'Factory', '', 'industrial', '["Heavy Duty Construction","Safety Standards","Automated Systems","Scalable Design"]', 1, 3, 1767705908, 1767705908),
+    (4, 'Infrastructure Development', 'infrastructure-development', 'Roads, bridges, and public works', 'Large-scale infrastructure projects including roads, bridges, utilities, and public facilities.', 'Road', '', 'infrastructure', '["Public Works","Utility Systems","Transportation","Environmental Compliance"]', 1, 4, 1767705908, 1767705908);
+  `);
+
+  // ===== TESTIMONIALS =====
+  sqlite.exec(`
+    INSERT INTO testimonials (id, clientName, clientTitle, clientCompany, clientImage, content, rating, projectId, featured, isActive, createdAt) VALUES
+    (1, 'John Smith', 'CEO', 'Smith Enterprises', '', 'Blueladder delivered our office building on time and within budget. Exceptional quality and professionalism.', 5, NULL, 1, 1, 1767705908),
+    (2, 'Sarah Johnson', 'Property Developer', 'Johnson Properties', '', 'Outstanding work on our residential complex. The attention to detail and customer service was remarkable.', 5, NULL, 1, 1, 1767705908);
+  `);
+
+  // ===== SITE CONTENT (contact, team, branding, hero, pricing) =====
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (1, 'hero', 'title', 'Building Excellence, Delivering Dreams', 'text', 1767705908),
+    (2, 'hero', 'subtitle', 'Premier construction company with 18+ years of experience in residential, commercial, and industrial projects.', 'text', 1767705908),
+    (3, 'about', 'title', 'About Blueladder Infrastructure', 'text', 1767705908),
+    (4, 'about', 'description', 'With over 18 years of experience, Blueladder Infrastructure has established itself as a leading construction company, delivering high-quality projects across residential, commercial, industrial, and infrastructure sectors.', 'text', 1767705908);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (5, 'hero', 'content', '{"headline":"BUILDING VISIONS. ELEVATING STANDARDS.","subheadline":"Leading construction company delivering excellence in residential, commercial, and industrial projects.","image":"https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80","cta":"Get a Quote"}', 'json', 1767790757);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (6, 'branding', 'content', '{"logo":"/uploads/images/1--PB1IffJ_-CPFNkO8u4-6.jpg"}', 'json', 1768043622);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (7, 'contact', 'content', '{"address":"G-20, Canal Walk Shoppers, B/s Palanpur Bus Station, Nr. Royal Dine Restaurant, Palanpur Canal Road, Surat, Gujarat 395009.","phone1":"+91 7778849470","phone2":"+91 9033861812","email1":"blueladderinfraa@gmail.com","hours":"Monday - Saturday: 9:00 AM - 6:00 PM\nSunday: Closed"}', 'json', 1768044305);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (9, 'team', 'content', '{"team_count":"2","team_0_name":"Manthan Kevadia","team_0_role":"CEO","team_0_image":"/uploads/images/1-3GiZDbcZYDD0dVbjiy2xo.jpg","team_1_name":"Ravi Gorasiya","team_1_role":"Founder","team_1_image":"/uploads/images/1-rHI3rUA-KkQYI_lgw5FJi.jpg"}', 'json', 1768049422);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (10, 'pricing', 'content', '{"residential_basic":"900","residential_standard":"1050","residential_premium":"1150","residential_luxury":"1250"}', 'json', 1772710668);
+  `);
+
+  console.log("[Database] Seed data restored successfully - 6 projects, 15 images, 4 services, 2 testimonials, contact info, team, pricing");
 }
 
 export async function getDb() {
