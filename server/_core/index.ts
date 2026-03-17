@@ -1,6 +1,6 @@
 import "dotenv/config";
 import express from "express";
-import compression from "compression";
+import zlib from "zlib";
 import { createServer } from "http";
 import fs from "fs";
 import net from "net";
@@ -35,7 +35,24 @@ async function startServer() {
   const server = createServer(app);
 
   // Enable gzip compression for all responses (major speed boost)
-  app.use(compression());
+  app.use((req, res, next) => {
+    const acceptEncoding = req.headers['accept-encoding'] || '';
+    if (!acceptEncoding.includes('gzip')) return next();
+
+    const originalSend = res.send.bind(res);
+    res.send = function (body: any) {
+      if (typeof body === 'string' || Buffer.isBuffer(body)) {
+        const buf = typeof body === 'string' ? Buffer.from(body) : body;
+        if (buf.length > 1024) {
+          res.setHeader('Content-Encoding', 'gzip');
+          res.removeHeader('Content-Length');
+          return originalSend(zlib.gzipSync(buf));
+        }
+      }
+      return originalSend(body);
+    };
+    next();
+  });
 
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
