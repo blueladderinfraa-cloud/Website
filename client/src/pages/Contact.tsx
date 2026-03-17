@@ -364,7 +364,7 @@ export default function Contact() {
       {/* Map Section */}
       <section className="h-[400px] bg-muted">
         <iframe
-          src="https://maps.google.com/maps?q=Canal+Walk+Shoppers+Palanpur+Canal+Road+Surat+Gujarat&t=&z=17&ie=UTF8&iwloc=&output=embed"
+          src="https://maps.google.com/maps?q=Canal+Walk+Shoppers,+challenger+pre+school+and+day+care,+132-136,+Palanpur+Canal+Rd,+Palanpur,+Surat,+Gujarat+395009&ftid=0x3be04c4f09672ef9:0x4c50a7811028807d&t=&z=17&ie=UTF8&iwloc=&output=embed"
           width="100%"
           height="100%"
           style={{ border: 0 }}
