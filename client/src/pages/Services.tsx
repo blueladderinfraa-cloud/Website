@@ -54,7 +54,7 @@ const defaultServices = [
     title: "Industrial Construction",
     shortDescription: "Warehouses, factories, and industrial facilities built for efficiency and durability.",
     fullDescription: "We build industrial facilities that optimize operations, ensure safety, and stand the test of time. Our expertise covers everything from manufacturing plants to distribution centers, designed to meet your specific operational needs.",
-    image: "https://images.unsplash.com/photo-1565636291267-c23a0f4d6a1b?w=800&h=500&fit=crop",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=500&fit=crop",
     features: [
       "Manufacturing plants and factories",
       "Warehouses and distribution centers",
@@ -92,7 +92,7 @@ const serviceIcons = {
 const defaultServiceImages: Record<string, string> = {
   residential: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop",
   commercial: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
-  industrial: "https://images.unsplash.com/photo-1565636291267-c23a0f4d6a1b?w=800&h=500&fit=crop",
+  industrial: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=500&fit=crop",
   infrastructure: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=500&fit=crop",
 };
 
