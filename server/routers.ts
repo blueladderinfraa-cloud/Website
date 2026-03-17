@@ -310,13 +310,17 @@ export const appRouter = router({
       }))
       .mutation(async ({ input }) => {
         const id = await db.createInquiry(input);
-        
-        // Send notification to owner
-        await notifyOwner({
-          title: "New Quote Request",
-          content: `New inquiry from ${input.name} (${input.email}).\nService: ${input.serviceType || 'General'}\nMessage: ${input.message || 'No message provided'}`,
-        });
-        
+
+        // Send notification to owner (non-blocking - don't fail the inquiry if notification fails)
+        try {
+          await notifyOwner({
+            title: "New Quote Request",
+            content: `New inquiry from ${input.name} (${input.email}).\nService: ${input.serviceType || 'General'}\nMessage: ${input.message || 'No message provided'}`,
+          });
+        } catch (err) {
+          console.error("[Inquiry] Notification failed (inquiry still saved):", err);
+        }
+
         return { id };
       }),
     
@@ -557,15 +561,18 @@ export const appRouter = router({
           specializations: input.specializations ? JSON.stringify(input.specializations) : undefined,
         });
         
-        // Send notification to owner
-        await notifyOwner({
-          title: "New Subcontractor Application",
-          content: `New application from ${input.companyName} (${input.contactName}).\nEmail: ${input.email}\nPhone: ${input.phone}\nSpecializations: ${input.specializations?.join(', ') || 'Not specified'}`,
-        });
-        
+        try {
+          await notifyOwner({
+            title: "New Subcontractor Application",
+            content: `New application from ${input.companyName} (${input.contactName}).\nEmail: ${input.email}\nPhone: ${input.phone}\nSpecializations: ${input.specializations?.join(', ') || 'Not specified'}`,
+          });
+        } catch (err) {
+          console.error("[Subcontractor] Notification failed:", err);
+        }
+
         return { id };
       }),
-    
+
     updateStatus: adminProcedure
       .input(z.object({
         id: z.number(),
@@ -669,12 +676,15 @@ export const appRouter = router({
         
         const id = await db.createTenderApplication(input);
         
-        // Send notification to owner
-        await notifyOwner({
-          title: "New Tender Application",
-          content: `New application for tender "${tender.title}" from ${input.companyName}.\nContact: ${input.contactName} (${input.email})`,
-        });
-        
+        try {
+          await notifyOwner({
+            title: "New Tender Application",
+            content: `New application for tender "${tender.title}" from ${input.companyName}.\nContact: ${input.contactName} (${input.email})`,
+          });
+        } catch (err) {
+          console.error("[Tender] Notification failed:", err);
+        }
+
         return { id };
       }),
     
