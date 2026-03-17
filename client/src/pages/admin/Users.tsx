@@ -213,7 +213,7 @@ export default function AdminUsers() {
 
         {/* User Detail Dialog */}
         <Dialog open={!!selectedUser} onOpenChange={() => setSelectedUser(null)}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl bg-white">
             <DialogHeader>
               <DialogTitle>User Details: {selectedUser?.name || "Unnamed User"}</DialogTitle>
             </DialogHeader>

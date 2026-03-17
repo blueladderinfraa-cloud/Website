@@ -303,7 +303,7 @@ export default function AdminInquiries() {
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl bg-white">
           <DialogHeader>
             <DialogTitle>Inquiry Details</DialogTitle>
           </DialogHeader>

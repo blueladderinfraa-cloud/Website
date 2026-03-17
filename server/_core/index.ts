@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
+import fs from "fs";
 import net from "net";
 import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -74,7 +75,6 @@ async function startServer() {
 
   for (const file of ["robots.txt", "sitemap.xml", "llms.txt"]) {
     app.get(`/${file}`, (req, res) => {
-      const fs = require("fs");
       for (const dir of possibleDirs) {
         const filePath = path.join(dir, file);
         if (fs.existsSync(filePath)) {

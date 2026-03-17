@@ -161,7 +161,7 @@ export default function AdminTenders() {
                 Create Tender
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl bg-white">
               <DialogHeader>
                 <DialogTitle>
                   {editingTender ? "Edit Tender" : "Create New Tender"}
@@ -392,7 +392,7 @@ export default function AdminTenders() {
 
       {/* Applications Dialog */}
       <Dialog open={!!selectedTender} onOpenChange={() => setSelectedTender(null)}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto bg-white">
           <DialogHeader>
             <DialogTitle>Tender Applications: {selectedTender?.title}</DialogTitle>
           </DialogHeader>

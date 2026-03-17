@@ -204,7 +204,7 @@ export default function AdminServices() {
               Add Service
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
             <DialogHeader>
               <DialogTitle>
                 {editingService ? "Edit Service" : "Add New Service"}

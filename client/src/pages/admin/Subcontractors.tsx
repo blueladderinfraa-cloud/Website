@@ -198,7 +198,7 @@ export default function AdminSubcontractors() {
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedSubcontractor} onOpenChange={() => setSelectedSubcontractor(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl bg-white">
           <DialogHeader>
             <DialogTitle>Subcontractor Details</DialogTitle>
           </DialogHeader>

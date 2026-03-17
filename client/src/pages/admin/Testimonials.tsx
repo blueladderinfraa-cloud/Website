@@ -168,7 +168,7 @@ export default function AdminTestimonials() {
               Add Testimonial
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl bg-white">
             <DialogHeader>
               <DialogTitle>
                 {editingTestimonial ? "Edit Testimonial" : "Add New Testimonial"}
