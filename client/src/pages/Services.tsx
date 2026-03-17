@@ -89,6 +89,13 @@ const serviceIcons = {
   infrastructure: Landmark,
 };
 
+const defaultServiceImages: Record<string, string> = {
+  residential: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=500&fit=crop",
+  commercial: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop",
+  industrial: "https://images.unsplash.com/photo-1565636291267-c23a0f4d6a1b?w=800&h=500&fit=crop",
+  infrastructure: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=500&fit=crop",
+};
+
 export default function Services() {
   usePageSEO({ title: "Construction Services - Blueladder Infra", description: "Residential, commercial, industrial & infrastructure construction services in Gujarat, India. Quality construction with experienced professionals." });
   const { data: dbServices } = trpc.services.list.useQuery();
@@ -143,7 +150,7 @@ export default function Services() {
                   <div className={isEven ? 'lg:order-1' : 'lg:order-2'}>
                     <div className="relative rounded-2xl overflow-hidden shadow-elegant-lg">
                       <img loading="lazy"
-                        src={service.image}
+                        src={service.image || defaultServiceImages[service.category] || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=500&fit=crop"}
                         alt={service.title}
                         className="w-full h-[400px] object-cover"
                         onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=500&fit=crop"; }}
