@@ -42,7 +42,7 @@ export const appRouter = router({
   // ============ PROJECTS ============
   projects: router({
     list: publicProcedure
-      .input(z.object({ status: z.string().optional(), category: z.string().optional() }).optional())
+      .input(z.object({ status: z.string().optional(), category: z.string().optional() }).nullish())
       .query(async ({ input }) => {
         return db.getAllProjects(input?.status, input?.category);
       }),
@@ -480,7 +480,7 @@ export const appRouter = router({
   // ============ SITE CONTENT ============
   siteContent: router({
     get: publicProcedure
-      .input(z.object({ section: z.string().optional() }).optional())
+      .input(z.object({ section: z.string().optional() }).nullish())
       .query(async ({ input }) => {
         return db.getSiteContent(input?.section);
       }),
