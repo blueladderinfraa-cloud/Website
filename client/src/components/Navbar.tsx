@@ -121,9 +121,10 @@ export default function Navbar() {
                   <a
                     href={`tel:${contactContent.phone1.replace(/\D/g, '')}`}
                     className="flex items-center gap-2 text-lg font-medium text-white/90 hover:text-white"
+                    title="Call us"
                   >
                     <Phone className="w-5 h-5" />
-                    <span>{contactContent.phone1}</span>
+                    <span>Call Us</span>
                   </a>
                 )}
 
