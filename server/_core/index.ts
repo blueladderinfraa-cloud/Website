@@ -45,6 +45,11 @@ async function startServer() {
   app.use("/uploads", express.static(uploadsPath));
   console.log("[Server] Serving uploads from:", uploadsPath);
   
+  // Google Search Console verification - MUST be before any other routes
+  app.get("/google102cab5db49cc2e0.html", (req, res) => {
+    res.type("text/html").send("google-site-verification: google102cab5db49cc2e0.html");
+  });
+
   // CRITICAL: Register ALL API routes BEFORE any other middleware
   console.log("[Server] Registering OAuth routes...");
   registerOAuthRoutes(app);
@@ -64,11 +69,6 @@ async function startServer() {
     res.status(404).json({ error: 'API endpoint not found', path: req.originalUrl });
   });
   
-  // Google Search Console verification
-  app.get("/google102cab5db49cc2e0.html", (req, res) => {
-    res.type("text/html").send("google-site-verification: google102cab5db49cc2e0.html");
-  });
-
   // Serve SEO files inline (avoids file path issues in production)
   app.get("/robots.txt", (req, res) => {
     res.type("text/plain").send(`# Blueladder Infra - Construction Company
