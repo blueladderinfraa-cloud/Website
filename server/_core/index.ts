@@ -99,19 +99,19 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://blueladderinfra.in/sitemap.xml
+Sitemap: https://www.blueladderinfra.in/sitemap.xml
 `);
   });
 
   app.get("/sitemap.xml", (req, res) => {
     res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://blueladderinfra.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://blueladderinfra.in/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://blueladderinfra.in/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://blueladderinfra.in/projects</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://blueladderinfra.in/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://blueladderinfra.in/cost-estimator</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.blueladderinfra.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.blueladderinfra.in/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.blueladderinfra.in/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.blueladderinfra.in/projects</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.blueladderinfra.in/contact</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.blueladderinfra.in/cost-estimator</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>`);
   });
 
@@ -126,12 +126,12 @@ Sitemap: https://blueladderinfra.in/sitemap.xml
 - Infrastructure Development: Roads, bridges
 
 ## Pages
-- Home: https://blueladderinfra.in/
-- About: https://blueladderinfra.in/about
-- Services: https://blueladderinfra.in/services
-- Projects: https://blueladderinfra.in/projects
-- Cost Estimator: https://blueladderinfra.in/cost-estimator
-- Contact: https://blueladderinfra.in/contact
+- Home: https://www.blueladderinfra.in/
+- About: https://www.blueladderinfra.in/about
+- Services: https://www.blueladderinfra.in/services
+- Projects: https://www.blueladderinfra.in/projects
+- Cost Estimator: https://www.blueladderinfra.in/cost-estimator
+- Contact: https://www.blueladderinfra.in/contact
 
 ## Contact
 - Phone: +91 7778870070
