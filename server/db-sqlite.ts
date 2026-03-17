@@ -231,6 +231,16 @@ function initializeTables(sqlite: InstanceType<typeof Database>) {
     console.log("[Database] Empty database detected - seeding with Blueladder data...");
     seedDatabase(sqlite);
   }
+
+  // One-time fix: update address to remove "Nr. Royal Dine Restaurant"
+  try {
+    const contactRow = sqlite.prepare("SELECT value FROM siteContent WHERE section='contact' AND key='content'").get() as any;
+    if (contactRow?.value && contactRow.value.includes('Nr. Royal Dine Restaurant')) {
+      const updated = contactRow.value.replace(', Nr. Royal Dine Restaurant', '');
+      sqlite.prepare("UPDATE siteContent SET value = ? WHERE section='contact' AND key='content'").run(updated);
+      console.log("[Database] Updated address: removed Nr. Royal Dine Restaurant");
+    }
+  } catch (e) { /* ignore if already fixed */ }
 }
 
 function seedDatabase(sqlite: InstanceType<typeof Database>) {
