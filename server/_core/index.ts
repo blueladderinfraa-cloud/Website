@@ -139,7 +139,7 @@ Sitemap: https://www.blueladderinfra.in/sitemap.xml
 - Contact: https://www.blueladderinfra.in/contact
 
 ## Contact
-- Phone: +91 7778870070
+- Phone: +91 7778849470
 - Location: Gujarat, India
 `);
   });
