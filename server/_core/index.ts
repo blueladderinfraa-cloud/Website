@@ -37,13 +37,20 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   
-  // Serve uploaded files statically
+  // Serve uploaded files statically - try volume path first, then fallback to build output
   const uploadsPath = process.env.UPLOADS_PATH
     || (process.env.NODE_ENV === "production"
       ? path.join(process.cwd(), "dist", "public", "uploads")
       : path.join(process.cwd(), "client", "public", "uploads"));
+  const buildUploadsPath = path.join(process.cwd(), "dist", "public", "uploads");
+
+  // Serve from volume path first
   app.use("/uploads", express.static(uploadsPath));
-  console.log("[Server] Serving uploads from:", uploadsPath);
+  // Also serve from build output as fallback (images committed to git)
+  if (uploadsPath !== buildUploadsPath) {
+    app.use("/uploads", express.static(buildUploadsPath));
+  }
+  console.log("[Server] Serving uploads from:", uploadsPath, "with fallback:", buildUploadsPath);
   
   // Google Search Console verification - MUST be before any other routes
   app.get("/google102cab5db49cc2e0.html", (req, res) => {

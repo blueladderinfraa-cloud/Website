@@ -335,7 +335,14 @@ export async function getDb() {
       // Use persistent volume path in production, local file in development
       const dbPath = process.env.DATABASE_PATH || './local.db';
       console.log(`[Database] Using database at: ${dbPath}`);
-      const sqlite = new Database(dbPath);
+      let sqlite: InstanceType<typeof Database>;
+      try {
+        sqlite = new Database(dbPath);
+      } catch (dbError) {
+        // If volume path fails (e.g. /data not mounted), fall back to local
+        console.warn(`[Database] Failed to open ${dbPath}, falling back to ./local.db:`, dbError);
+        sqlite = new Database('./local.db');
+      }
       if (!_initialized) {
         initializeTables(sqlite);
         _initialized = true;
