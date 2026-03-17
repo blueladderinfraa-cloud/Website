@@ -378,6 +378,7 @@ export default function Home() {
                       src={project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop"}
                       alt={project.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=400&fit=crop"; }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="absolute top-4 left-4">
@@ -459,6 +460,7 @@ export default function Home() {
                         src={testimonials[currentTestimonial].clientImage}
                         alt={testimonials[currentTestimonial].clientName}
                         className="w-14 h-14 rounded-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonials[currentTestimonial].clientName)}&size=56&background=1e40af&color=fff&rounded=true`; }}
                       />
                     ) : (
                       <div className="w-14 h-14 rounded-full gradient-primary flex items-center justify-center text-white font-bold text-xl">

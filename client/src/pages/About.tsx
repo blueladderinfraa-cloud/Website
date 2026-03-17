@@ -137,6 +137,7 @@ export default function About() {
                 src={aboutContent.image || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop"}
                 alt="Construction site"
                 className="rounded-xl shadow-elegant w-full h-48 object-cover"
+                onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop"; }}
               />
               <img loading="lazy"
                 src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop"
@@ -276,6 +277,7 @@ export default function About() {
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=300&background=1e40af&color=fff`; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>

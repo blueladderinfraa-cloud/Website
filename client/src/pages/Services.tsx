@@ -146,6 +146,7 @@ export default function Services() {
                         src={service.image}
                         alt={service.title}
                         className="w-full h-[400px] object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=500&fit=crop"; }}
                       />
                       <div className="absolute top-4 left-4">
                         <div className="w-14 h-14 rounded-xl gradient-primary flex items-center justify-center">

@@ -266,6 +266,7 @@ export default function ImageGalleryManager({
                       src={image.url}
                       alt={image.alt || image.caption || "Image"}
                       className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='14' fill='%23999'%3ENo image%3C/text%3E%3C/svg%3E"; }}
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button
@@ -319,6 +320,7 @@ export default function ImageGalleryManager({
                       src={image.url}
                       alt={image.alt || image.caption || "Image"}
                       className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='14' fill='%23999'%3ENo image%3C/text%3E%3C/svg%3E"; }}
                     />
                   </div>
                   <div className="flex-1 min-w-0">

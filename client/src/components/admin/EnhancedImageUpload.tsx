@@ -214,7 +214,7 @@ export default function EnhancedImageUpload({
                 <Settings className="w-4 h-4" />
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="bg-white">
               <DialogHeader>
                 <DialogTitle>Image Optimization Settings</DialogTitle>
               </DialogHeader>

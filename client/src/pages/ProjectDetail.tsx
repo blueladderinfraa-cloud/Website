@@ -268,6 +268,7 @@ export default function ProjectDetail() {
                           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
                             index === currentImageIndex ? 'opacity-100' : 'opacity-0'
                           }`}
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=600&fit=crop"; }}
                         />
                       ))}
                     </div>

@@ -667,7 +667,7 @@ export default function AdminProjectEdit() {
 
             {/* Gallery caption dialog */}
             <Dialog open={showGalleryCaptionDialog} onOpenChange={setShowGalleryCaptionDialog}>
-              <DialogContent>
+              <DialogContent className="bg-white">
                 <DialogHeader>
                   <DialogTitle>Add Gallery Image</DialogTitle>
                 </DialogHeader>
@@ -769,7 +769,7 @@ export default function AdminProjectEdit() {
 
             {/* Phase add/edit dialog */}
             <Dialog open={showPhaseDialog} onOpenChange={setShowPhaseDialog}>
-              <DialogContent>
+              <DialogContent className="bg-white">
                 <DialogHeader>
                   <DialogTitle>{editingPhase ? "Edit Phase" : "Add Phase"}</DialogTitle>
                 </DialogHeader>

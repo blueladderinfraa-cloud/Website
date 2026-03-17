@@ -157,10 +157,11 @@ export default function ClientPortal() {
                   <Link key={project.id} href={`/client/project/${project.id}`}>
                     <Card className="border-0 shadow-elegant hover-lift cursor-pointer h-full">
                       <div className="relative h-40 overflow-hidden rounded-t-lg">
-                        <img
+                        <img loading="lazy"
                           src={project.coverImage || "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=300&fit=crop"}
                           alt={project.title}
                           className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=600&h=300&fit=crop"; }}
                         />
                         <div className="absolute top-3 right-3">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${

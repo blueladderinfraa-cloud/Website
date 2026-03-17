@@ -463,7 +463,7 @@ export const appRouter = router({
         const { id, ...data } = input;
         const updateData = {
           ...data,
-          features: data.features ? JSON.stringify(data.features) : data.features,
+          ...(data.features !== undefined ? { features: JSON.stringify(data.features) } : {}),
         };
         await db.updateService(id, updateData);
         return { success: true };
