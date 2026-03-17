@@ -229,7 +229,7 @@ export default function Contact() {
                           id="name"
                           value={formData.name}
                           onChange={(e) => handleChange("name", e.target.value)}
-                          placeholder="John Smith"
+                          placeholder="Your Name"
                           required
                         />
                       </div>
@@ -240,7 +240,7 @@ export default function Contact() {
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleChange("email", e.target.value)}
-                          placeholder="john@example.com"
+                          placeholder="your@email.com"
                           required
                         />
                       </div>
@@ -254,7 +254,7 @@ export default function Contact() {
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleChange("phone", e.target.value)}
-                          placeholder="+1 (234) 567-890"
+                          placeholder="+91 XXXXX XXXXX"
                         />
                       </div>
                       <div className="space-y-2">

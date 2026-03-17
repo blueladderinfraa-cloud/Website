@@ -313,6 +313,11 @@ function seedDatabase(sqlite: InstanceType<typeof Database>) {
 
   sqlite.exec(`
     INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
+    (8, 'services', 'content', '{"service_0_image":"/uploads/images/1-Ow9Tcp-KFIFnh0TKhIqo1.HEIC","service_2_image":"/uploads/images/1-jBZ38VmIN1aHqYaikmSbv.HEIC"}', 'json', 1768044620);
+  `);
+
+  sqlite.exec(`
+    INSERT INTO siteContent (id, section, key, value, type, updatedAt) VALUES
     (9, 'team', 'content', '{"team_count":"2","team_0_name":"Manthan Kevadia","team_0_role":"CEO","team_0_image":"/uploads/images/1-3GiZDbcZYDD0dVbjiy2xo.jpg","team_1_name":"Ravi Gorasiya","team_1_role":"Founder","team_1_image":"/uploads/images/1-rHI3rUA-KkQYI_lgw5FJi.jpg"}', 'json', 1768049422);
   `);
 
