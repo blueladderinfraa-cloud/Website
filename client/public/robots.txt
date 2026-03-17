@@ -1,0 +1,37 @@
+# Blueladder Infra - Construction Company
+# Allow all search engines and AI crawlers
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-access
+Disallow: /admin-login
+Disallow: /go-admin
+Disallow: /api/
+
+# AI Crawlers - Explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://blueladderinfra.in/sitemap.xml

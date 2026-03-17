@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import {
   ArrowLeft,
   ArrowRight,
@@ -114,8 +115,9 @@ export default function ProjectDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   const { data: project, isLoading } = trpc.projects.getBySlug.useQuery({ slug: slug || "" });
+  usePageSEO({ title: project ? `${project.title} - Blueladder Infra` : "Project Details - Blueladder Infra", description: project?.description || "View construction project details, timeline, and gallery at Blueladder Infra." });
   const images = project?.images;
 
   const defaultProject = {

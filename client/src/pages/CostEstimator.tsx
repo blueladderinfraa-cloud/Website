@@ -14,6 +14,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useContentManager } from "@/hooks/useContentManager";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import {
   Calculator,
   ArrowRight,
@@ -39,6 +40,7 @@ const qualityLevels = [
 ];
 
 export default function CostEstimator() {
+  usePageSEO({ title: "Construction Cost Estimator - Blueladder Infra", description: "Free construction cost estimator tool. Calculate estimated costs for residential, commercial and industrial construction projects in Gujarat." });
   // Get pricing from admin panel
   const { getPricingContent } = useContentManager();
   const costRates = getPricingContent();

@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
 import { useContentManager } from "@/hooks/useContentManager";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import {
   ArrowRight,
   Building2,
@@ -88,6 +89,7 @@ const serviceIcons = {
 };
 
 export default function Home() {
+  usePageSEO({ title: "Blueladder Infra - Leading Construction Company in Gujarat, India", description: "Trusted construction company offering residential, commercial, industrial & infrastructure construction services. 18+ years of excellence." });
   const { data: projects } = trpc.projects.featured.useQuery();
   const { data: testimonials } = trpc.testimonials.featured.useQuery();
   const { data: stats } = trpc.siteStats.list.useQuery();

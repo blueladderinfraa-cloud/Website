@@ -14,6 +14,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useContentManager } from "@/hooks/useContentManager";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import { generateMapEmbedUrlFallback, cleanAddressForMap } from "@/lib/mapUtils";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 
 export default function Contact() {
+  usePageSEO({ title: "Contact Us - Blueladder Infra", description: "Get in touch with Blueladder Infra for your construction needs. Request a free quote for residential, commercial or industrial construction projects." });
   // Get dynamic content from admin panel
   const { getContactContent } = useContentManager();
   const contactContent = getContactContent();

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useContentManager } from "@/hooks/useContentManager";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import {
   ArrowRight,
   Award,
@@ -59,6 +60,7 @@ const milestones = [
 ];
 
 export default function About() {
+  usePageSEO({ title: "About Us - Blueladder Infra", description: "Learn about Blueladder Infra's 18+ years of construction excellence in Gujarat, India. Our vision, mission, values and expert team." });
   // Get dynamic content from admin panel
   const { getAboutContent, getTeamContent } = useContentManager();
   const aboutContent = getAboutContent();

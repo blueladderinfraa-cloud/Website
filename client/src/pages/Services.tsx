@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
 import { useContentManager } from "@/hooks/useContentManager";
+import { usePageSEO } from "@/hooks/usePageSEO";
 import {
   ArrowRight,
   Building2,
@@ -89,6 +90,7 @@ const serviceIcons = {
 };
 
 export default function Services() {
+  usePageSEO({ title: "Construction Services - Blueladder Infra", description: "Residential, commercial, industrial & infrastructure construction services in Gujarat, India. Quality construction with experienced professionals." });
   const { data: dbServices } = trpc.services.list.useQuery();
   const services = dbServices?.length ? dbServices : defaultServices;
 

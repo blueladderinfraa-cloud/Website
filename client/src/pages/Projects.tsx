@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { trpc } from "@/lib/trpc";
 import { ArrowRight, Filter } from "lucide-react";
+import { usePageSEO } from "@/hooks/usePageSEO";
 
 const statusFilters = [
   { value: "", label: "All Projects" },
@@ -86,6 +87,7 @@ const defaultProjects = [
 ];
 
 export default function Projects() {
+  usePageSEO({ title: "Our Projects - Blueladder Infra", description: "Explore our portfolio of completed and ongoing construction projects. Residential, commercial, industrial and infrastructure projects in Gujarat." });
   const [statusFilter, setStatusFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   
