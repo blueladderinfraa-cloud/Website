@@ -25,7 +25,7 @@ const services = [
 
 const socialLinks = [
   { icon: "facebook", href: "https://www.facebook.com/blueladderinfra", label: "Facebook", path: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" },
-  { icon: "instagram", href: "https://www.instagram.com/blueladderinfra", label: "Instagram", path: "M16 4H8a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4zm-4 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3.5-7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" },
+  { icon: "instagram", href: "https://www.instagram.com/blueladder_infra_", label: "Instagram", path: "M16 4H8a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4zm-4 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm3.5-7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" },
   { icon: "linkedin", href: "https://www.linkedin.com/company/blueladderinfra", label: "LinkedIn", path: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" },
 ];
 
