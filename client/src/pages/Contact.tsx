@@ -364,7 +364,7 @@ export default function Contact() {
       {/* Map Section */}
       <section className="h-[400px] bg-muted">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d930.0!2d72.8235!3d21.186!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04c4f09672ef9%3A0x4c50a7811028807d!2sCanal%20Walk%20Shoppers!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin"
+          src="https://maps.google.com/maps?q=canal+walk+shoppers+pal+surat&t=&z=17&ie=UTF8&iwloc=&output=embed"
           width="100%"
           height="100%"
           style={{ border: 0 }}
