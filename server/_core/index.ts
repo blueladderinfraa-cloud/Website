@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import compression from "compression";
 import { createServer } from "http";
 import fs from "fs";
 import net from "net";
@@ -32,7 +33,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  
+
+  // Enable gzip compression for all responses (major speed boost)
+  app.use(compression());
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -44,11 +48,11 @@ async function startServer() {
       : path.join(process.cwd(), "client", "public", "uploads"));
   const buildUploadsPath = path.join(process.cwd(), "dist", "public", "uploads");
 
-  // Serve from volume path first
-  app.use("/uploads", express.static(uploadsPath));
+  // Serve from volume path first (with cache)
+  app.use("/uploads", express.static(uploadsPath, { maxAge: '7d' }));
   // Also serve from build output as fallback (images committed to git)
   if (uploadsPath !== buildUploadsPath) {
-    app.use("/uploads", express.static(buildUploadsPath));
+    app.use("/uploads", express.static(buildUploadsPath, { maxAge: '7d' }));
   }
   console.log("[Server] Serving uploads from:", uploadsPath, "with fallback:", buildUploadsPath);
   
