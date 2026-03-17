@@ -52,7 +52,7 @@ const defaultProjects = [
     location: "Industrial Park, NJ",
     status: "ongoing",
     category: "industrial",
-    coverImage: "https://images.unsplash.com/photo-1565636291267-c23a0f4d6a1b?w=600&h=400&fit=crop",
+    coverImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
   },
   {
     id: 4,

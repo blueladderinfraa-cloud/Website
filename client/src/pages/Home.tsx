@@ -135,7 +135,7 @@ export default function Home() {
       category: "industrial",
       title: "Industrial",
       description: "Warehouses, factories, and industrial facilities built for efficiency and durability.",
-      image: "https://images.unsplash.com/photo-1565636291267-c23a0f4d6a1b?w=600&h=400&fit=crop",
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=400&fit=crop",
     },
     {
       category: "infrastructure",
