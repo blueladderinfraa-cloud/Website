@@ -9,7 +9,7 @@ interface BrandingContent {
 }
 
 const DEFAULT_BRANDING: BrandingContent = {
-  logo: '',
+  logo: '/uploads/images/1--PB1IffJ_-CPFNkO8u4-6.jpg',
   favicon: '',
   logoAlt: 'Blueladder Infra Company Logo',
   companyName: 'Blueladder Infra',
