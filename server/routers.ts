@@ -757,7 +757,7 @@ export const appRouter = router({
         const settings = await db.getSiteContent('admin_settings');
         const storedHash = settings?.find((s: any) => s.key === 'password_hash')?.value;
 
-        const adminEmail = process.env.ADMIN_EMAIL || "admin";
+        const adminEmail = process.env.ADMIN_EMAIL || "blueladderinfraa@gmail.com";
         const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
         // Check current password against DB hash or env var

@@ -88,7 +88,7 @@ export function registerOAuthRoutes(app: Express) {
     const { username, password } = req.body;
     
     // Admin credentials from environment variables
-    const adminEmail = process.env.ADMIN_EMAIL || "admin";
+    const adminEmail = process.env.ADMIN_EMAIL || "blueladderinfraa@gmail.com";
     const adminPassword = process.env.ADMIN_PASSWORD || (() => {
       console.warn("[OAuth] ADMIN_PASSWORD not set — falling back to default. Set ADMIN_PASSWORD env var for production.");
       return "admin123";

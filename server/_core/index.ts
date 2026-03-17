@@ -63,6 +63,18 @@ async function startServer() {
     res.status(404).json({ error: 'API endpoint not found', path: req.originalUrl });
   });
   
+  // Serve SEO files explicitly before SPA fallback
+  const publicDir = process.env.NODE_ENV === "production"
+    ? path.resolve(process.cwd(), "dist", "public")
+    : path.resolve(process.cwd(), "client", "public");
+
+  for (const file of ["robots.txt", "sitemap.xml", "llms.txt"]) {
+    app.get(`/${file}`, (req, res) => {
+      const filePath = path.join(publicDir, file);
+      res.sendFile(filePath);
+    });
+  }
+
   console.log("[Server] Setting up static/Vite serving...");
   // AFTER all API routes are registered, set up Vite/static serving
   if (process.env.NODE_ENV === "development") {
