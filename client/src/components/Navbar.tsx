@@ -114,7 +114,7 @@ export default function Navbar() {
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[85vw] max-w-80 p-6 border-l-0 text-white" style={{ backgroundColor: "#0a1628" }}>
+            <SheetContent side="right" className="w-[85vw] max-w-80 p-6 border-l-0 text-white !bg-[#0a1628]">
               <div className="flex flex-col gap-6 mt-8">
                 {/* Mobile Contact Info */}
                 {contactContent.phone1 && (

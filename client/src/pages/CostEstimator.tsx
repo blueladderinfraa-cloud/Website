@@ -137,15 +137,15 @@ export default function CostEstimator() {
                         <button
                           key={type.value}
                           onClick={() => setConstructionType(type.value)}
-                          className={`p-4 rounded-xl border-2 text-left transition-all ${
-                            constructionType === type.value
-                              ? "border-primary bg-primary text-white"
-                              : "border-border hover:border-primary/50"
-                          }`}
+                          className="p-4 rounded-xl border-2 text-left transition-all"
+                          style={constructionType === type.value
+                            ? { backgroundColor: "#1a365d", borderColor: "#1a365d", color: "white" }
+                            : { backgroundColor: "white", borderColor: "#e2e8f0", color: "#1e293b" }
+                          }
                         >
-                          <type.icon className={`w-6 h-6 mb-2 ${constructionType === type.value ? "text-white" : "text-foreground"}`} />
-                          <div className={`font-medium ${constructionType === type.value ? "text-white" : "text-foreground"}`}>{type.label}</div>
-                          <div className={`text-xs ${constructionType === type.value ? "text-white/80" : "text-muted-foreground"}`}>{type.description}</div>
+                          <type.icon className="w-6 h-6 mb-2" style={{ color: constructionType === type.value ? "white" : "#1e293b" }} />
+                          <div className="font-medium" style={{ color: constructionType === type.value ? "white" : "#1e293b" }}>{type.label}</div>
+                          <div className="text-xs" style={{ color: constructionType === type.value ? "rgba(255,255,255,0.8)" : "#64748b" }}>{type.description}</div>
                         </button>
                       ))}
                     </div>

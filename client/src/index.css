@@ -833,7 +833,7 @@ img[src*=".jpg"], img[src*=".jpeg"] {
   -webkit-backdrop-filter: blur(6px) !important;
 }
 
-/* Force white background on ALL dropdowns, popovers, selects, and dialogs */
+/* Force white background on dropdowns, popovers, selects, and admin dialogs */
 [data-radix-select-content],
 [data-radix-popper-content-wrapper] [data-slot="select-content"],
 [data-radix-popper-content-wrapper] [role="listbox"],
@@ -841,9 +841,15 @@ img[src*=".jpg"], img[src*=".jpeg"] {
 [data-radix-dropdown-menu-content],
 [data-radix-popover-content],
 [data-slot="select-content"],
-[data-slot="dialog-content"],
-[role="dialog"],
 [data-radix-alert-dialog-content] {
+  background: white !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Admin dialogs only (not mobile nav sheet) */
+[data-slot="dialog-content"]:not([data-side]) {
   background: white !important;
   color: #1e293b !important;
   border: 1px solid #e2e8f0 !important;
