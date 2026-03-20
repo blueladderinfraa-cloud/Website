@@ -223,7 +223,26 @@ function initializeTables(sqlite: InstanceType<typeof Database>) {
       createdAt INTEGER NOT NULL DEFAULT (unixepoch())
     );
   `);
-  console.log("[Database] All tables initialized successfully");
+
+  // Create indexes for faster queries
+  sqlite.exec(`
+    CREATE INDEX IF NOT EXISTS idx_projects_slug ON projects(slug);
+    CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(featured);
+    CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
+    CREATE INDEX IF NOT EXISTS idx_projects_category ON projects(category);
+    CREATE INDEX IF NOT EXISTS idx_projectImages_projectId ON projectImages(projectId);
+    CREATE INDEX IF NOT EXISTS idx_projectPhases_projectId ON projectPhases(projectId);
+    CREATE INDEX IF NOT EXISTS idx_inquiries_status ON inquiries(status);
+    CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+    CREATE INDEX IF NOT EXISTS idx_siteContent_section ON siteContent(section);
+    CREATE INDEX IF NOT EXISTS idx_siteContent_section_key ON siteContent(section, key);
+    CREATE INDEX IF NOT EXISTS idx_dailyLogs_projectId ON dailyLogs(projectId);
+    CREATE INDEX IF NOT EXISTS idx_documents_projectId ON documents(projectId);
+    CREATE INDEX IF NOT EXISTS idx_tenderApplications_tenderId ON tenderApplications(tenderId);
+    CREATE INDEX IF NOT EXISTS idx_clientProjects_clientId ON clientProjects(clientId);
+    CREATE INDEX IF NOT EXISTS idx_clientProjects_projectId ON clientProjects(projectId);
+  `);
+  console.log("[Database] All tables and indexes initialized successfully");
 
   // Seed data if database is empty
   const projectCount = sqlite.prepare("SELECT COUNT(*) as cnt FROM projects").get() as any;
@@ -904,18 +923,20 @@ export async function removeClientFromProject(clientId: number, projectId: numbe
 export async function getDashboardStats() {
   const db = await getDb();
   if (!db) return { totalProjects: 0, activeProjects: 0, totalInquiries: 0, newInquiries: 0, totalClients: 0 };
-  
-  const [projectCount] = await db.select({ count: sql<number>`count(*)` }).from(projects);
-  const [activeProjectCount] = await db.select({ count: sql<number>`count(*)` }).from(projects).where(eq(projects.status, "ongoing"));
-  const [inquiryCount] = await db.select({ count: sql<number>`count(*)` }).from(inquiries);
-  const [newInquiryCount] = await db.select({ count: sql<number>`count(*)` }).from(inquiries).where(eq(inquiries.status, "new"));
-  const [clientCount] = await db.select({ count: sql<number>`count(*)` }).from(users).where(eq(users.role, "client"));
-  
+
+  const [stats] = await db.select({
+    totalProjects: sql<number>`(SELECT count(*) FROM projects)`,
+    activeProjects: sql<number>`(SELECT count(*) FROM projects WHERE status = 'ongoing')`,
+    totalInquiries: sql<number>`(SELECT count(*) FROM inquiries)`,
+    newInquiries: sql<number>`(SELECT count(*) FROM inquiries WHERE status = 'new')`,
+    totalClients: sql<number>`(SELECT count(*) FROM users WHERE role = 'client')`,
+  }).from(sql`(SELECT 1)`);
+
   return {
-    totalProjects: Number(projectCount?.count || 0),
-    activeProjects: Number(activeProjectCount?.count || 0),
-    totalInquiries: Number(inquiryCount?.count || 0),
-    newInquiries: Number(newInquiryCount?.count || 0),
-    totalClients: Number(clientCount?.count || 0)
+    totalProjects: Number(stats?.totalProjects || 0),
+    activeProjects: Number(stats?.activeProjects || 0),
+    totalInquiries: Number(stats?.totalInquiries || 0),
+    newInquiries: Number(stats?.newInquiries || 0),
+    totalClients: Number(stats?.totalClients || 0)
   };
 }

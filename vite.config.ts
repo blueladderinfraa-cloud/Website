@@ -31,6 +31,8 @@ export default defineConfig({
           if (id.includes('node_modules/react/')) return 'vendor-react';
           if (id.includes('node_modules/framer-motion')) return 'vendor-motion';
           if (id.includes('node_modules/recharts')) return 'vendor-charts';
+          if (id.includes('client/src/pages/admin/')) return 'admin-pages';
+          if (id.includes('client/src/components/admin/')) return 'admin-components';
         },
       },
     },
