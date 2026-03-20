@@ -164,15 +164,15 @@ export const IMAGE_GUIDANCE: SectionGuidance = {
     optimizationTips: "Use consistent lighting and composition"
   },
   team: {
-    width: 300,
-    height: 300,
+    width: 800,
+    height: 800,
     aspectRatio: "1:1",
     description: "Team member profile photos",
-    fileSize: "< 100KB",
-    formats: ["JPEG", "PNG"],
-    minDimensions: { width: 150, height: 150 },
-    responsiveInfo: "Circular crop on all devices",
-    optimizationTips: "Center faces in frame for best results"
+    fileSize: "< 500KB",
+    formats: ["JPEG", "PNG", "WebP"],
+    minDimensions: { width: 200, height: 200 },
+    responsiveInfo: "Circular crop on all devices, HD quality preserved",
+    optimizationTips: "Upload full HD photos — they will be automatically optimized while keeping sharp quality"
   },
   testimonials: {
     width: 150,
@@ -359,13 +359,13 @@ export const DETAILED_IMAGE_GUIDANCE: Record<ContentSection, ImageGuidanceConfig
   team: {
     section: "team",
     dimensions: {
-      recommended: { width: 300, height: 300 },
-      minimum: { width: 150, height: 150 },
+      recommended: { width: 800, height: 800 },
+      minimum: { width: 200, height: 200 },
       aspectRatio: "1:1"
     },
     fileSize: {
-      recommended: "< 100KB",
-      maximum: "200KB"
+      recommended: "< 500KB",
+      maximum: "2MB"
     },
     formats: {
       preferred: ["JPEG", "WebP"],
@@ -378,20 +378,20 @@ export const DETAILED_IMAGE_GUIDANCE: Record<ContentSection, ImageGuidanceConfig
         "Use consistent lighting and background",
         "Center faces in the frame for circular crops",
         "Maintain professional appearance",
-        "Use high-resolution source images"
+        "Upload full HD photos for best quality — they will be optimized automatically"
       ]
     },
     responsive: {
-      desktop: "Circular thumbnails in grid layout",
+      desktop: "HD circular thumbnails in grid layout",
       tablet: "Larger thumbnails, fewer per row",
       mobile: "Single or double column layout"
     },
     optimization: {
-      compressionLevel: 75,
-      qualityRecommendation: "Good quality (75-85%) for clear facial features",
+      compressionLevel: 85,
+      qualityRecommendation: "High quality (85-90%) for sharp, clear facial features",
       performanceTips: [
-        "Optimize for circular crop display",
-        "Use appropriate resolution for thumbnail size",
+        "Upload full HD photos — client-side optimization handles compression",
+        "Use WebP format for best quality-to-size ratio",
         "Consider progressive JPEG for faster loading"
       ]
     },

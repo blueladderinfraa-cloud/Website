@@ -84,12 +84,24 @@ export function ImageUploadWithGuidance({
   const [actualDimensions, setActualDimensions] = useState<{ width: number; height: number } | null>(null);
   const [showGuidanceDialog, setShowGuidanceDialog] = useState(false);
   const [showPreviewDialog, setShowPreviewDialog] = useState(false);
-  const [optimizationSettings, setOptimizationSettings] = useState({
-    enabled: true,
-    maxWidth: 1920,
-    maxHeight: 1080,
-    quality: 0.8,
-    format: "jpeg" as const,
+  const [optimizationSettings, setOptimizationSettings] = useState(() => {
+    // Use section-specific defaults for optimization
+    if (section === "team" || section === "testimonials") {
+      return {
+        enabled: true,
+        maxWidth: 1080,
+        maxHeight: 1080,
+        quality: 0.85,
+        format: "jpeg" as const,
+      };
+    }
+    return {
+      enabled: true,
+      maxWidth: 1920,
+      maxHeight: 1080,
+      quality: 0.8,
+      format: "jpeg" as const,
+    };
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
