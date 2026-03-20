@@ -69,8 +69,8 @@ export function MultiImageUpload({
         toast.error(`${file.name} is not an image file`);
         return false;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
+      if (file.size > 20 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 20MB)`);
         return false;
       }
       return true;
@@ -294,7 +294,7 @@ export function MultiImageUpload({
                     Drop images here or click to upload
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    PNG, JPG, GIF up to 5MB each • {images.length}/{maxImages} images
+                    PNG, JPG, GIF up to 20MB each • {images.length}/{maxImages} images
                   </p>
                 </div>
               </>

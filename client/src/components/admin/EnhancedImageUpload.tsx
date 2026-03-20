@@ -55,7 +55,7 @@ export default function EnhancedImageUpload({
   label = "Image",
   placeholder = "Upload an image or paste URL",
   accept = "image/*",
-  maxSizeMB = 5,
+  maxSizeMB = 20,
   allowOptimization = true,
   showMetadata = true,
   validationOptions = {},
