@@ -533,7 +533,7 @@ export default function AdminContent() {
                       <Button
                         variant="outline"
                         onClick={() => {
-                          const teamCount = parseInt(content.team_count || "4");
+                          const teamCount = parseInt(content.team_count || "2");
                           const newCount = teamCount + 1;
                           updateField("team_count", newCount.toString());
                           // Initialize new team member with default values
@@ -546,16 +546,16 @@ export default function AdminContent() {
                       </Button>
                     </div>
                     
-                    {Array.from({ length: parseInt(content.team_count || "4") }, (_, index) => (
+                    {Array.from({ length: parseInt(content.team_count || "2") }, (_, index) => (
                       <div key={index} className="p-4 bg-secondary/50 rounded-lg mb-4">
                         <div className="flex justify-between items-center mb-3">
                           <h5 className="font-medium text-foreground">Team Member {index + 1}</h5>
-                          {parseInt(content.team_count || "4") > 1 && (
+                          {parseInt(content.team_count || "2") > 1 && (
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                const teamCount = parseInt(content.team_count || "4");
+                                const teamCount = parseInt(content.team_count || "2");
                                 if (teamCount > 1) {
                                   // Remove this team member by shifting all subsequent members
                                   for (let i = index; i < teamCount - 1; i++) {
@@ -579,12 +579,12 @@ export default function AdminContent() {
                         <div className="space-y-3">
                           <Input
                             placeholder="Team member name"
-                            value={content[`team_${index}_name`] || (index === 0 ? "Robert Johnson" : index === 1 ? "Sarah Williams" : index === 2 ? "Michael Chen" : index === 3 ? "Emily Davis" : "")}
+                            value={content[`team_${index}_name`] || (index === 0 ? "Manthan Kevadia" : index === 1 ? "Ravi Gorasiya" : "")}
                             onChange={(e) => updateField(`team_${index}_name`, e.target.value)}
                           />
                           <Input
                             placeholder="Role/Position"
-                            value={content[`team_${index}_role`] || (index === 0 ? "CEO & Founder" : index === 1 ? "Chief Operations Officer" : index === 2 ? "Chief Engineer" : index === 3 ? "Project Director" : "")}
+                            value={content[`team_${index}_role`] || (index === 0 ? "CEO" : index === 1 ? "Founder" : "")}
                             onChange={(e) => updateField(`team_${index}_role`, e.target.value)}
                           />
                           <ImageUploadWithGuidance
@@ -609,7 +609,7 @@ export default function AdminContent() {
                       };
                       
                       // Add all team member fields
-                      const teamCount = parseInt(content.team_count || "4");
+                      const teamCount = parseInt(content.team_count || "2");
                       for (let i = 0; i < teamCount; i++) {
                         teamData[`team_${i}_name`] = content[`team_${i}_name`];
                         teamData[`team_${i}_role`] = content[`team_${i}_role`];
