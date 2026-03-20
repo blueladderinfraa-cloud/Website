@@ -21,7 +21,7 @@ export function ImageUpload({
   label = "Image",
   placeholder = "Upload an image or paste URL",
   accept = "image/*",
-  maxSizeMB = 20,
+  maxSizeMB = 5,
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -237,8 +237,8 @@ export function ImageUploadInline({
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      toast.error("File size must be less than 20MB");
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
       return;
     }
 

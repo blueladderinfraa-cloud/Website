@@ -820,9 +820,9 @@ export const appRouter = router({
         // Convert base64 to buffer
         const buffer = Buffer.from(input.base64, "base64");
         
-        // Validate file size (max 20MB for full HD photos)
-        if (buffer.length > 20 * 1024 * 1024) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "File size must be less than 20MB" });
+        // Validate file size (max 5MB)
+        if (buffer.length > 5 * 1024 * 1024) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "File size must be less than 5MB" });
         }
         
         // Upload to S3
