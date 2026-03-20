@@ -63,8 +63,8 @@ export function SimpleMultiImageUpload({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB");
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("File size must be less than 20MB");
       return;
     }
 
@@ -191,7 +191,7 @@ export function SimpleMultiImageUpload({
               {isUploading ? "Uploading photos..." : "Click to upload photos"}
             </div>
             <div className="text-sm text-gray-500 mt-1">
-              Select multiple photos (PNG, JPG, GIF up to 5MB each)
+              Select multiple photos (PNG, JPG, GIF up to 20MB each)
             </div>
           </div>
         </label>
