@@ -924,19 +924,19 @@ export async function getDashboardStats() {
   const db = await getDb();
   if (!db) return { totalProjects: 0, activeProjects: 0, totalInquiries: 0, newInquiries: 0, totalClients: 0 };
 
-  const [stats] = await db.select({
-    totalProjects: sql<number>`(SELECT count(*) FROM projects)`,
-    activeProjects: sql<number>`(SELECT count(*) FROM projects WHERE status = 'ongoing')`,
-    totalInquiries: sql<number>`(SELECT count(*) FROM inquiries)`,
-    newInquiries: sql<number>`(SELECT count(*) FROM inquiries WHERE status = 'new')`,
-    totalClients: sql<number>`(SELECT count(*) FROM users WHERE role = 'client')`,
-  }).from(sql`(SELECT 1)`);
+  const [projectCount, activeProjectCount, inquiryCount, newInquiryCount, clientCount] = await Promise.all([
+    db.select({ count: sql<number>`count(*)` }).from(projects),
+    db.select({ count: sql<number>`count(*)` }).from(projects).where(eq(projects.status, "ongoing")),
+    db.select({ count: sql<number>`count(*)` }).from(inquiries),
+    db.select({ count: sql<number>`count(*)` }).from(inquiries).where(eq(inquiries.status, "new")),
+    db.select({ count: sql<number>`count(*)` }).from(users).where(eq(users.role, "client")),
+  ]);
 
   return {
-    totalProjects: Number(stats?.totalProjects || 0),
-    activeProjects: Number(stats?.activeProjects || 0),
-    totalInquiries: Number(stats?.totalInquiries || 0),
-    newInquiries: Number(stats?.newInquiries || 0),
-    totalClients: Number(stats?.totalClients || 0)
+    totalProjects: Number(projectCount[0]?.count || 0),
+    activeProjects: Number(activeProjectCount[0]?.count || 0),
+    totalInquiries: Number(inquiryCount[0]?.count || 0),
+    newInquiries: Number(newInquiryCount[0]?.count || 0),
+    totalClients: Number(clientCount[0]?.count || 0)
   };
 }

@@ -11,11 +11,10 @@ import "./index.css";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
-      gcTime: 10 * 60 * 1000, // Cache kept for 10 minutes
-      refetchOnWindowFocus: false, // Don't refetch when switching tabs
-      refetchOnMount: false, // Don't refetch if data is fresh
-      retry: 1, // Only retry once on failure
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: 1,
     },
   },
 });
