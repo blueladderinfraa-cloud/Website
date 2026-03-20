@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,56 +88,56 @@ export default function AdminContent() {
     },
   });
 
-  const parsedContent = useMemo(() => {
-    if (!siteContent || siteContent.length === 0) return null;
-
-    const contentMap: Record<string, any> = {};
-
-    siteContent.forEach((item: any) => {
-      contentMap[item.key] = item.value;
-    });
-
-    const sectionsToProcess = [
-      { key: 'hero_content', prefix: 'hero_' },
-      { key: 'about_content', prefix: 'about_' },
-      { key: 'contact_content', prefix: 'contact_' },
-      { key: 'services_content', prefix: 'services_' },
-      { key: 'testimonials_content', prefix: 'testimonials_' },
-      { key: 'team_content', prefix: 'team_' },
-      { key: 'branding_content', prefix: 'branding_' },
-      { key: 'stats_content', prefix: 'stat_' },
-      { key: 'pricing_content', prefix: 'pricing_' }
-    ];
-
-    sectionsToProcess.forEach(({ key, prefix }) => {
-      if (contentMap[key]) {
-        try {
-          const sectionData = JSON.parse(contentMap[key]);
-          Object.keys(sectionData).forEach(fieldKey => {
-            if (sectionData[fieldKey] !== undefined && sectionData[fieldKey] !== null) {
-              if (prefix === 'contact_' && !fieldKey.startsWith('contact_')) {
-                contentMap[`contact_${fieldKey}`] = sectionData[fieldKey];
-              } else if (prefix !== 'contact_' && !fieldKey.startsWith(prefix)) {
-                contentMap[`${prefix}${fieldKey}`] = sectionData[fieldKey];
-              } else {
-                contentMap[fieldKey] = sectionData[fieldKey];
-              }
-            }
-          });
-        } catch (e) {
-          console.error(`Error parsing ${key}:`, e);
-        }
-      }
-    });
-
-    return contentMap;
-  }, [siteContent]);
-
   useEffect(() => {
-    if (parsedContent) {
-      setContent(parsedContent);
+    if (siteContent && siteContent.length > 0) {
+      const contentMap: Record<string, any> = {};
+      
+      // First, load all raw content
+      siteContent.forEach((item: any) => {
+        contentMap[item.key] = item.value;
+      });
+      
+      // Then, parse and map structured content sections
+      const sectionsToProcess = [
+        { key: 'hero_content', prefix: 'hero_' },
+        { key: 'about_content', prefix: 'about_' },
+        { key: 'contact_content', prefix: 'contact_' },
+        { key: 'services_content', prefix: 'services_' },
+        { key: 'testimonials_content', prefix: 'testimonials_' },
+        { key: 'team_content', prefix: 'team_' },
+        { key: 'branding_content', prefix: 'branding_' },
+        { key: 'stats_content', prefix: 'stat_' },
+        { key: 'pricing_content', prefix: 'pricing_' }
+      ];
+      
+      sectionsToProcess.forEach(({ key, prefix }) => {
+        if (contentMap[key]) {
+          try {
+            const sectionData = JSON.parse(contentMap[key]);
+            
+            // Map all fields from the section data to the expected field names
+            Object.keys(sectionData).forEach(fieldKey => {
+              if (sectionData[fieldKey] !== undefined && sectionData[fieldKey] !== null) {
+                // For contact section, add contact_ prefix if not already present
+                if (prefix === 'contact_' && !fieldKey.startsWith('contact_')) {
+                  contentMap[`contact_${fieldKey}`] = sectionData[fieldKey];
+                } else if (prefix !== 'contact_' && !fieldKey.startsWith(prefix)) {
+                  // For other sections, add section prefix if not already present
+                  contentMap[`${prefix}${fieldKey}`] = sectionData[fieldKey];
+                } else {
+                  contentMap[fieldKey] = sectionData[fieldKey];
+                }
+              }
+            });
+          } catch (e) {
+            console.error(`Error parsing ${key}:`, e);
+          }
+        }
+      });
+      
+      setContent(contentMap);
     }
-  }, [parsedContent]);
+  }, [siteContent]);
 
   const handleSave = async (section: string, key: string, value: any) => {
     setIsSaving(true);
