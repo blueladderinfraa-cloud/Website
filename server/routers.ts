@@ -465,7 +465,7 @@ export const appRouter = router({
           ...data,
           ...(data.features !== undefined ? { features: JSON.stringify(data.features) } : {}),
         };
-        await db.updateService(id, updateData);
+        await db.updateService(id, updateData as any);
         return { success: true };
       }),
     

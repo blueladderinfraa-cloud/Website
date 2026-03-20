@@ -70,7 +70,7 @@ export default function EnhancedImageUpload({
     maxWidth: 1920,
     maxHeight: 1080,
     quality: 0.8,
-    format: "jpeg" as const,
+    format: "jpeg" as "jpeg" | "png" | "webp",
   });
   const [showOptimizationDialog, setShowOptimizationDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

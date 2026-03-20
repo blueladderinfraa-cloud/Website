@@ -45,10 +45,7 @@ export default function AdminInquiries() {
   const { data: inquiries, isLoading: isLoadingInquiries, error, refetch } = trpc.inquiries.list.useQuery(
     undefined,
     {
-      onError: (error) => {
-        handleApiError(error, "load inquiries", () => refetch());
-      },
-      retry: (failureCount, error) => {
+      retry: (failureCount: number) => {
         // Retry up to 3 times for network errors
         if (failureCount < 3) {
           return true;
