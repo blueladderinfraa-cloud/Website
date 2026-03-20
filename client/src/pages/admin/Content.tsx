@@ -584,7 +584,7 @@ export default function AdminContent() {
                           />
                           <Input
                             placeholder="Role/Position"
-                            value={content[`team_${index}_role`] || (index === 0 ? "CEO" : index === 1 ? "Founder" : "")}
+                            value={content[`team_${index}_role`] || (index === 0 ? "Co-Founder & Director" : index === 1 ? "Co-Founder & Director" : "")}
                             onChange={(e) => updateField(`team_${index}_role`, e.target.value)}
                           />
                           <ImageUploadWithGuidance
