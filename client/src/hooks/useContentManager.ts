@@ -111,8 +111,8 @@ export function useContentManager() {
     const team = [];
 
     const defaultTeam = [
-      { name: "Manthan Kevadia", role: "CEO", image: "/uploads/images/1-3GiZDbcZYDD0dVbjiy2xo.jpg" },
-      { name: "Ravi Gorasiya", role: "Founder", image: "/uploads/images/1-rHI3rUA-KkQYI_lgw5FJi.jpg" },
+      { name: "Manthan Kevadia", role: "Co-Founder & Director", image: "/uploads/images/1-3GiZDbcZYDD0dVbjiy2xo.jpg" },
+      { name: "Ravi Gorasiya", role: "Co-Founder & Director", image: "/uploads/images/1-rHI3rUA-KkQYI_lgw5FJi.jpg" },
     ];
 
     for (let i = 0; i < teamCount; i++) {
