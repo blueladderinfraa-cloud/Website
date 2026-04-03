@@ -393,85 +393,105 @@ export default function AdminProjects() {
               <p className="text-muted-foreground mt-4">Loading projects...</p>
             </div>
           ) : filteredProjects.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-secondary/50">
-                  <tr>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Project</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Location</th>
-                    <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProjects.map((project: any) => (
-                    <tr key={project.id} className="border-t">
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted">
-                            {project.coverImage ? (
-                              <img
-                                src={project.coverImage}
-                                alt={project.title}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <Building2 className="w-6 h-6 text-muted-foreground" />
-                              </div>
-                            )}
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3 p-3">
+                {filteredProjects.map((project: any) => (
+                  <div key={project.id} className="bg-white rounded-xl border p-3 shadow-sm">
+                    <div className="flex gap-3">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0">
+                        {project.coverImage ? (
+                          <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Building2 className="w-6 h-6 text-muted-foreground" />
                           </div>
-                          <div>
-                            <div className="font-medium text-foreground flex items-center gap-2">
-                              {project.title}
-                              {project.featured && (
-                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-foreground text-sm flex items-center gap-1">
+                          <span className="truncate">{project.title}</span>
+                          {project.featured && <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 shrink-0" />}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{project.location || "-"}</div>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="capitalize text-xs text-muted-foreground">{project.category}</span>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                            project.status === "completed" ? "bg-green-100 text-green-700" :
+                            project.status === "ongoing" ? "bg-blue-100 text-blue-700" :
+                            "bg-orange-100 text-orange-700"
+                          }`}>{project.status}</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1 shrink-0">
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleEdit(project)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => handleDelete(project.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-secondary/50">
+                    <tr>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Project</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Location</th>
+                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProjects.map((project: any) => (
+                      <tr key={project.id} className="border-t">
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted">
+                              {project.coverImage ? (
+                                <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <Building2 className="w-6 h-6 text-muted-foreground" />
+                                </div>
                               )}
                             </div>
-                            <div className="text-sm text-muted-foreground">{project.slug}</div>
+                            <div>
+                              <div className="font-medium text-foreground flex items-center gap-2">
+                                {project.title}
+                                {project.featured && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
+                              </div>
+                              <div className="text-sm text-muted-foreground">{project.slug}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className="capitalize text-foreground">{project.category}</span>
-                      </td>
-                      <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          project.status === "completed" ? "bg-green-100 text-green-700" :
-                          project.status === "ongoing" ? "bg-blue-100 text-blue-700" :
-                          "bg-orange-100 text-orange-700"
-                        }`}>
-                          {project.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-muted-foreground">
-                        {project.location || "-"}
-                      </td>
-                      <td className="p-4">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(project)}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(project.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        </td>
+                        <td className="p-4"><span className="capitalize text-foreground">{project.category}</span></td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            project.status === "completed" ? "bg-green-100 text-green-700" :
+                            project.status === "ongoing" ? "bg-blue-100 text-blue-700" :
+                            "bg-orange-100 text-orange-700"
+                          }`}>{project.status}</span>
+                        </td>
+                        <td className="p-4 text-muted-foreground">{project.location || "-"}</td>
+                        <td className="p-4">
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" size="sm" onClick={() => handleEdit(project)}><Pencil className="w-4 h-4" /></Button>
+                            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(project.id)}><Trash2 className="w-4 h-4" /></Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <div className="p-12 text-center">
               <Building2 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
