@@ -130,8 +130,11 @@ export default function AdminProjects() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { client, area, ...rest } = formData;
+    // Auto-set cover image from first gallery photo if not set
+    const coverImage = rest.coverImage || (rest.images.length > 0 ? rest.images[0].imageUrl : "");
     const data = {
       ...rest,
+      coverImage,
       clientName: client || undefined,
       sqftBuilt: area ? parseInt(area) : undefined,
     };

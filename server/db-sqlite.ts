@@ -241,6 +241,17 @@ function initializeTables(sqlite: InstanceType<typeof Database>) {
       console.log("[Database] Updated address: removed Nr. Royal Dine Restaurant");
     }
   } catch (e) { /* ignore if already fixed */ }
+
+  // Auto-fix: set cover image from first gallery photo for projects without cover
+  try {
+    const emptyCovers = sqlite.prepare(
+      "SELECT p.id, pi.imageUrl FROM projects p JOIN projectImages pi ON pi.projectId = p.id WHERE (p.coverImage IS NULL OR p.coverImage = '') AND pi.sortOrder = (SELECT MIN(pi2.sortOrder) FROM projectImages pi2 WHERE pi2.projectId = p.id)"
+    ).all() as any[];
+    for (const row of emptyCovers) {
+      sqlite.prepare("UPDATE projects SET coverImage = ? WHERE id = ?").run(row.imageUrl, row.id);
+      console.log(`[Database] Auto-set cover image for project ${row.id}`);
+    }
+  } catch (e) { /* ignore */ }
 }
 
 function seedDatabase(sqlite: InstanceType<typeof Database>) {
