@@ -317,7 +317,31 @@ export default function AdminProjects() {
               </div>
 
               <div className="space-y-2">
-                <Label className="admin-label">Project Images</Label>
+                <Label className="admin-label">Cover Image</Label>
+                <div className="flex gap-2">
+                  <Input
+                    className="admin-input flex-1"
+                    placeholder="Paste cover image URL or upload below"
+                    value={formData.coverImage}
+                    onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                  />
+                </div>
+                {formData.coverImage && (
+                  <div className="relative w-full h-40 rounded-lg overflow-hidden border">
+                    <img src={formData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                      onClick={() => setFormData({ ...formData, coverImage: "" })}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="admin-label">Project Photos (Gallery)</Label>
                 <SimpleMultiImageUpload
                   images={formData.images}
                   onChange={(newImages) => {
