@@ -27,13 +27,12 @@ export default function AdminDashboard() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-              <p className="text-muted-foreground">Welcome to the Blueladder Infrastructure admin panel</p>
+              <p className="text-sm text-muted-foreground">Welcome to the Blueladder Infrastructure admin panel</p>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             {[
               { title: "Active Projects", value: String(stats?.activeProjects ?? 0), icon: Building2, color: "bg-blue-500", href: "/admin/projects" },
               { title: "New Inquiries", value: String(stats?.totalInquiries ?? 0), icon: MessageSquare, color: "bg-green-500", href: "/admin/inquiries" },
@@ -42,17 +41,17 @@ export default function AdminDashboard() {
             ].map((stat) => (
               <Link key={stat.title} href={stat.href}>
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center`}>
-                        <stat.icon className="w-6 h-6 text-white" />
+                  <CardContent className="p-3 md:p-6">
+                    <div className="flex items-center justify-between mb-2 md:mb-4">
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl ${stat.color} flex items-center justify-center`}>
+                        <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                       </div>
-                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                      <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
                     </div>
-                    <div className="text-3xl font-bold text-foreground mb-1">
+                    <div className="text-2xl md:text-3xl font-bold text-foreground mb-1">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-muted-foreground">{stat.title}</div>
+                    <div className="text-xs md:text-sm text-muted-foreground">{stat.title}</div>
                   </CardContent>
                 </Card>
               </Link>

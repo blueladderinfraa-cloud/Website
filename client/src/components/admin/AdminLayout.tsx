@@ -70,9 +70,9 @@ export default function AdminLayout({ children, currentPage, title, description 
       <AdminHeader user={user} />
       <AdminNavigation currentPage={currentPage} />
       
-      <main className="container admin-main-content">
-        <div className="mb-8">
-          <h1 className="text-3xl admin-page-title">{title}</h1>
+      <main className="container admin-main-content px-4 md:px-8">
+        <div className="mb-4 md:mb-8">
+          <h1 className="text-xl md:text-3xl admin-page-title">{title}</h1>
           {description && (
             <p className="admin-page-description">{description}</p>
           )}
