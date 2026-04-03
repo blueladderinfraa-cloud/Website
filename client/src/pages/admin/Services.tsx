@@ -395,87 +395,134 @@ export default function AdminServices() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
             </div>
           ) : filteredServices.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-secondary/50">
-                  <tr>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Service</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Features</th>
-                    <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredServices.map((service: any) => (
-                    <tr key={service.id} className="border-t">
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted">
-                            {service.image ? (
-                              <img
-                                src={service.image}
-                                alt={service.title}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <Wrench className="w-6 h-6 text-muted-foreground" />
-                              </div>
-                            )}
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3 p-3">
+                {filteredServices.map((service: any) => (
+                  <div key={service.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                    <div className="flex items-start gap-3">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted shrink-0">
+                        {service.image ? (
+                          <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Wrench className="w-6 h-6 text-muted-foreground" />
                           </div>
-                          <div>
-                            <div className="font-medium text-foreground">{service.title}</div>
-                            <div className="text-sm text-muted-foreground">{service.slug}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <span className="capitalize text-foreground">{service.category}</span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            service.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
-                          }`}>
-                            {service.isActive ? "Active" : "Inactive"}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleServiceStatus(service)}
-                          >
-                            {service.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </Button>
-                        </div>
-                      </td>
-                      <td className="p-4 text-muted-foreground">
-                        {service.features?.length || 0} features
-                      </td>
-                      <td className="p-4">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(service)}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(service.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-foreground truncate">{service.title}</div>
+                        <div className="text-sm text-muted-foreground capitalize">{service.category}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          service.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+                        }`}>
+                          {service.isActive ? "Active" : "Inactive"}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{service.features?.length || 0} features</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => toggleServiceStatus(service)}>
+                          {service.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(service)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(service.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-secondary/50">
+                    <tr>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Service</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Features</th>
+                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {filteredServices.map((service: any) => (
+                      <tr key={service.id} className="border-t">
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted">
+                              {service.image ? (
+                                <img
+                                  src={service.image}
+                                  alt={service.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <Wrench className="w-6 h-6 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-medium text-foreground">{service.title}</div>
+                              <div className="text-sm text-muted-foreground">{service.slug}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className="capitalize text-foreground">{service.category}</span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              service.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+                            }`}>
+                              {service.isActive ? "Active" : "Inactive"}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleServiceStatus(service)}
+                            >
+                              {service.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </Button>
+                          </div>
+                        </td>
+                        <td className="p-4 text-muted-foreground">
+                          {service.features?.length || 0} features
+                        </td>
+                        <td className="p-4">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEdit(service)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleDelete(service.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <div className="p-12 text-center">
               <Wrench className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

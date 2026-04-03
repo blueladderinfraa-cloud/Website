@@ -119,85 +119,140 @@ export default function AdminUsers() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
               </div>
             ) : filteredUsers.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-secondary/50">
-                    <tr>
-                      <th className="text-left p-4 font-medium text-muted-foreground">User</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Email</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Role</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Joined</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Last Active</th>
-                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredUsers.map((u: any) => (
-                      <tr key={u.id} className="border-t">
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                              {getRoleIcon(u.role)}
-                            </div>
-                            <div>
-                              <div className="font-medium text-foreground">
-                                {u.name || "Unnamed User"}
-                              </div>
-                              {u.company && (
-                                <div className="text-sm text-muted-foreground">{u.company}</div>
-                              )}
-                            </div>
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3 p-3">
+                  {filteredUsers.map((u: any) => (
+                    <div key={u.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            {getRoleIcon(u.role)}
                           </div>
-                        </td>
-                        <td className="p-4 text-muted-foreground">
-                          {u.email || "-"}
-                        </td>
-                        <td className="p-4">
-                          <div className="flex items-center gap-2">
-                            <Select
-                              value={u.role}
-                              disabled={updateRole.isPending}
-                              onValueChange={(value: "admin" | "client" | "subcontractor" | "user") => {
-                                updateRole.mutate({ userId: u.id, role: value });
-                              }}
-                            >
-                              <SelectTrigger className="w-[140px]">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="client">Client</SelectItem>
-                                <SelectItem value="subcontractor">Subcontractor</SelectItem>
-                                <SelectItem value="user">User</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${getRoleBadge(u.role)}`}>
-                              {u.role}
-                            </span>
+                          <div className="min-w-0">
+                            <div className="font-medium text-foreground truncate">{u.name || "Unnamed User"}</div>
+                            <div className="text-sm text-muted-foreground truncate">{u.email || "-"}</div>
+                            {u.company && (
+                              <div className="text-xs text-muted-foreground truncate">{u.company}</div>
+                            )}
                           </div>
-                        </td>
-                        <td className="p-4 text-muted-foreground">
-                          {new Date(u.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="p-4 text-muted-foreground">
-                          {new Date(u.lastSignedIn).toLocaleDateString()}
-                        </td>
-                        <td className="p-4">
-                          <div className="flex justify-end">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedUser(u)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedUser(u)} className="shrink-0">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={u.role}
+                            disabled={updateRole.isPending}
+                            onValueChange={(value: "admin" | "client" | "subcontractor" | "user") => {
+                              updateRole.mutate({ userId: u.id, role: value });
+                            }}
+                          >
+                            <SelectTrigger className="w-[130px] h-8 text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="admin">Admin</SelectItem>
+                              <SelectItem value="client">Client</SelectItem>
+                              <SelectItem value="subcontractor">Subcontractor</SelectItem>
+                              <SelectItem value="user">User</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${getRoleBadge(u.role)}`}>
+                            {u.role}
+                          </span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          Joined {new Date(u.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-secondary/50">
+                      <tr>
+                        <th className="text-left p-4 font-medium text-muted-foreground">User</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Email</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Role</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Joined</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Last Active</th>
+                        <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredUsers.map((u: any) => (
+                        <tr key={u.id} className="border-t">
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                {getRoleIcon(u.role)}
+                              </div>
+                              <div>
+                                <div className="font-medium text-foreground">
+                                  {u.name || "Unnamed User"}
+                                </div>
+                                {u.company && (
+                                  <div className="text-sm text-muted-foreground">{u.company}</div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-4 text-muted-foreground">
+                            {u.email || "-"}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <Select
+                                value={u.role}
+                                disabled={updateRole.isPending}
+                                onValueChange={(value: "admin" | "client" | "subcontractor" | "user") => {
+                                  updateRole.mutate({ userId: u.id, role: value });
+                                }}
+                              >
+                                <SelectTrigger className="w-[140px]">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="admin">Admin</SelectItem>
+                                  <SelectItem value="client">Client</SelectItem>
+                                  <SelectItem value="subcontractor">Subcontractor</SelectItem>
+                                  <SelectItem value="user">User</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${getRoleBadge(u.role)}`}>
+                                {u.role}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4 text-muted-foreground">
+                            {new Date(u.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="p-4 text-muted-foreground">
+                            {new Date(u.lastSignedIn).toLocaleDateString()}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex justify-end">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedUser(u)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="p-12 text-center">
                 <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

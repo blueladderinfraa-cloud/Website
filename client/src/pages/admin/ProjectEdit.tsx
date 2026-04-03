@@ -366,12 +366,12 @@ export default function AdminProjectEdit() {
       </header>
 
       {/* Main Content */}
-      <main className="container py-8">
+      <main className="container py-4 md:py-8 px-3 md:px-4">
         <Tabs defaultValue="details" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsList className="w-full md:w-auto">
+            <TabsTrigger value="details" className="flex-1 md:flex-none">Details</TabsTrigger>
+            <TabsTrigger value="images" className="flex-1 md:flex-none">Images</TabsTrigger>
+            <TabsTrigger value="timeline" className="flex-1 md:flex-none">Timeline</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details">
@@ -613,7 +613,7 @@ export default function AdminProjectEdit() {
             </Card>
 
             <Card className="border-0 shadow-elegant mt-6">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <CardTitle>Gallery Images</CardTitle>
                 <input
                   ref={galleryFileInputRef}
@@ -700,7 +700,7 @@ export default function AdminProjectEdit() {
 
           <TabsContent value="timeline">
             <Card className="border-0 shadow-elegant">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <CardTitle>Project Phases</CardTitle>
                 <Button
                   variant="outline"

@@ -304,78 +304,124 @@ export default function AdminTenders() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
               </div>
             ) : filteredTenders.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-secondary/50">
-                    <tr>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Tender</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Budget</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Deadline</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTenders.map((tender: any) => (
-                      <tr key={tender.id} className="border-t">
-                        <td className="p-4">
-                          <div className="font-medium text-foreground">{tender.title}</div>
-                          <div className="text-sm text-muted-foreground line-clamp-1">
-                            {tender.description}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <span className="capitalize text-foreground">{tender.category}</span>
-                        </td>
-                        <td className="p-4 text-foreground">
-                          {tender.budget || "-"}
-                        </td>
-                        <td className="p-4 text-muted-foreground">
-                          {tender.deadline
-                            ? new Date(tender.deadline).toLocaleDateString()
-                            : "-"}
-                        </td>
-                        <td className="p-4">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            tender.status === "open" ? "bg-green-100 text-green-700" :
-                            tender.status === "awarded" ? "bg-blue-100 text-blue-700" :
-                            "bg-muted text-muted-foreground"
-                          }`}>
-                            {tender.status}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedTender(tender)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEdit(tender)}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => handleDelete(tender.id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </td>
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3 p-3">
+                  {filteredTenders.map((tender: any) => (
+                    <div key={tender.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-foreground truncate">{tender.title}</div>
+                          <div className="text-sm text-muted-foreground line-clamp-1">{tender.description}</div>
+                        </div>
+                        <span className={`px-2 py-1 rounded text-xs font-medium shrink-0 ${
+                          tender.status === "open" ? "bg-green-100 text-green-700" :
+                          tender.status === "awarded" ? "bg-blue-100 text-blue-700" :
+                          "bg-muted text-muted-foreground"
+                        }`}>
+                          {tender.status}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="capitalize text-foreground">{tender.category}</span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="text-foreground">{tender.budget || "No budget"}</span>
+                        {tender.deadline && (
+                          <>
+                            <span className="text-muted-foreground">·</span>
+                            <span className="text-muted-foreground">Due {new Date(tender.deadline).toLocaleDateString()}</span>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => setSelectedTender(tender)}>
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(tender)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(tender.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-secondary/50">
+                      <tr>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Tender</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Category</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Budget</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Deadline</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                        <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredTenders.map((tender: any) => (
+                        <tr key={tender.id} className="border-t">
+                          <td className="p-4">
+                            <div className="font-medium text-foreground">{tender.title}</div>
+                            <div className="text-sm text-muted-foreground line-clamp-1">
+                              {tender.description}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <span className="capitalize text-foreground">{tender.category}</span>
+                          </td>
+                          <td className="p-4 text-foreground">
+                            {tender.budget || "-"}
+                          </td>
+                          <td className="p-4 text-muted-foreground">
+                            {tender.deadline
+                              ? new Date(tender.deadline).toLocaleDateString()
+                              : "-"}
+                          </td>
+                          <td className="p-4">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              tender.status === "open" ? "bg-green-100 text-green-700" :
+                              tender.status === "awarded" ? "bg-blue-100 text-blue-700" :
+                              "bg-muted text-muted-foreground"
+                            }`}>
+                              {tender.status}
+                            </span>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedTender(tender)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEdit(tender)}
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => handleDelete(tender.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="p-12 text-center">
                 <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

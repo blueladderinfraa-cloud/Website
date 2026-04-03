@@ -323,106 +323,170 @@ export default function AdminTestimonials() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
             </div>
           ) : filteredTestimonials.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-secondary/50">
-                  <tr>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Client</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Content</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Rating</th>
-                    <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                    <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTestimonials.map((testimonial: any) => (
-                    <tr key={testimonial.id} className="border-t">
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          {testimonial.clientImage && (
-                            <img
-                              src={testimonial.clientImage}
-                              alt={testimonial.clientName}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          )}
-                          <div>
-                            <div className="font-medium text-foreground">{testimonial.clientName}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {testimonial.clientCompany && testimonial.clientTitle
-                                ? `${testimonial.clientTitle} at ${testimonial.clientCompany}`
-                                : testimonial.clientCompany || testimonial.clientTitle || ""}
-                            </div>
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3 p-3">
+                {filteredTestimonials.map((testimonial: any) => (
+                  <div key={testimonial.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {testimonial.clientImage && (
+                          <img
+                            src={testimonial.clientImage}
+                            alt={testimonial.clientName}
+                            className="w-10 h-10 rounded-full object-cover shrink-0"
+                          />
+                        )}
+                        <div className="min-w-0">
+                          <div className="font-medium text-foreground truncate">{testimonial.clientName}</div>
+                          <div className="text-sm text-muted-foreground truncate">
+                            {testimonial.clientCompany && testimonial.clientTitle
+                              ? `${testimonial.clientTitle} at ${testimonial.clientCompany}`
+                              : testimonial.clientCompany || testimonial.clientTitle || ""}
                           </div>
                         </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="text-sm text-foreground line-clamp-2 max-w-xs">
-                          {testimonial.content}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          ))}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            testimonial.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"
-                          }`}>
-                            {testimonial.isActive ? "Active" : "Inactive"}
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+                          <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-foreground line-clamp-2">{testimonial.content}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex gap-2">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          testimonial.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"
+                        }`}>
+                          {testimonial.isActive ? "Active" : "Inactive"}
+                        </span>
+                        {testimonial.featured && (
+                          <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                            Featured
                           </span>
-                          {testimonial.featured && (
-                            <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">
-                              Featured
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleActive(testimonial)}
-                            title={testimonial.isActive ? "Deactivate" : "Activate"}
-                          >
-                            {testimonial.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleFeatured(testimonial)}
-                            title={testimonial.featured ? "Remove from featured" : "Add to featured"}
-                            className={testimonial.featured ? "text-blue-600" : ""}
-                          >
-                            <Star className={`w-4 h-4 ${testimonial.featured ? "fill-current" : ""}`} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(testimonial)}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(testimonial.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
+                        )}
+                      </div>
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => toggleActive(testimonial)}>
+                          {testimonial.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => toggleFeatured(testimonial)} className={testimonial.featured ? "text-blue-600" : ""}>
+                          <Star className={`w-4 h-4 ${testimonial.featured ? "fill-current" : ""}`} />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(testimonial)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(testimonial.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-secondary/50">
+                    <tr>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Client</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Content</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Rating</th>
+                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {filteredTestimonials.map((testimonial: any) => (
+                      <tr key={testimonial.id} className="border-t">
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            {testimonial.clientImage && (
+                              <img
+                                src={testimonial.clientImage}
+                                alt={testimonial.clientName}
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            )}
+                            <div>
+                              <div className="font-medium text-foreground">{testimonial.clientName}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {testimonial.clientCompany && testimonial.clientTitle
+                                  ? `${testimonial.clientTitle} at ${testimonial.clientCompany}`
+                                  : testimonial.clientCompany || testimonial.clientTitle || ""}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="text-sm text-foreground line-clamp-2 max-w-xs">
+                            {testimonial.content}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-1">
+                            {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            ))}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex gap-2">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              testimonial.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"
+                            }`}>
+                              {testimonial.isActive ? "Active" : "Inactive"}
+                            </span>
+                            {testimonial.featured && (
+                              <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                                Featured
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleActive(testimonial)}
+                              title={testimonial.isActive ? "Deactivate" : "Activate"}
+                            >
+                              {testimonial.isActive ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleFeatured(testimonial)}
+                              title={testimonial.featured ? "Remove from featured" : "Add to featured"}
+                              className={testimonial.featured ? "text-blue-600" : ""}
+                            >
+                              <Star className={`w-4 h-4 ${testimonial.featured ? "fill-current" : ""}`} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEdit(testimonial)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleDelete(testimonial.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           ) : (
             <div className="p-12 text-center">
               <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

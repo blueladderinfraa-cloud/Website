@@ -217,73 +217,129 @@ export default function AdminInquiries() {
             {isLoadingInquiries ? (
               <PageLoadingSpinner text="Loading inquiries..." />
             ) : filteredInquiries.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-secondary/50">
-                    <tr>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Contact</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Project</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Date</th>
-                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredInquiries.map((inquiry: any) => (
-                      <tr key={inquiry.id} className="border-t">
-                        <td className="p-4">
-                          <div className="font-medium text-foreground">{inquiry.name}</div>
-                          <div className="text-sm text-muted-foreground">{inquiry.email}</div>
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3 p-3">
+                  {filteredInquiries.map((inquiry: any) => (
+                    <div key={inquiry.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="font-medium text-foreground truncate">{inquiry.name}</div>
+                          <div className="text-sm text-muted-foreground truncate">{inquiry.email}</div>
                           {inquiry.phone && (
                             <div className="text-sm text-muted-foreground">{inquiry.phone}</div>
                           )}
-                        </td>
-                        <td className="p-4">
-                          <div className="text-foreground capitalize">{inquiry.projectType || "-"}</div>
-                          <div className="text-sm text-muted-foreground">{inquiry.budget || "-"}</div>
-                        </td>
-                        <td className="p-4">
-                          <Select
-                            value={inquiry.status}
-                            onValueChange={(value: "new" | "contacted" | "quoted" | "converted" | "closed") => updateStatus.mutate({ id: inquiry.id, status: value })}
-                            disabled={updateStatus.isPending}
-                          >
-                            <SelectTrigger className="w-[130px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="new">New</SelectItem>
-                              <SelectItem value="contacted">Contacted</SelectItem>
-                              <SelectItem value="quoted">Quoted</SelectItem>
-                              <SelectItem value="converted">Converted</SelectItem>
-                              <SelectItem value="closed">Closed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-4 text-muted-foreground">
-                          {new Date(inquiry.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="p-4">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedInquiry(inquiry)}
-                            >
-                              <Eye className="w-4 h-4" />
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedInquiry(inquiry)}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <a href={`mailto:${inquiry.email}`}>
+                            <Button variant="ghost" size="sm">
+                              <Mail className="w-4 h-4" />
                             </Button>
-                            <a href={`mailto:${inquiry.email}`}>
-                              <Button variant="ghost" size="sm">
-                                <Mail className="w-4 h-4" />
-                              </Button>
-                            </a>
-                          </div>
-                        </td>
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="capitalize text-foreground">{inquiry.projectType || "-"}</span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="text-muted-foreground">{inquiry.budget || "-"}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <Select
+                          value={inquiry.status}
+                          onValueChange={(value: "new" | "contacted" | "quoted" | "converted" | "closed") => updateStatus.mutate({ id: inquiry.id, status: value })}
+                          disabled={updateStatus.isPending}
+                        >
+                          <SelectTrigger className="w-[130px] h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="new">New</SelectItem>
+                            <SelectItem value="contacted">Contacted</SelectItem>
+                            <SelectItem value="quoted">Quoted</SelectItem>
+                            <SelectItem value="converted">Converted</SelectItem>
+                            <SelectItem value="closed">Closed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(inquiry.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-secondary/50">
+                      <tr>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Contact</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Project</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Date</th>
+                        <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredInquiries.map((inquiry: any) => (
+                        <tr key={inquiry.id} className="border-t">
+                          <td className="p-4">
+                            <div className="font-medium text-foreground">{inquiry.name}</div>
+                            <div className="text-sm text-muted-foreground">{inquiry.email}</div>
+                            {inquiry.phone && (
+                              <div className="text-sm text-muted-foreground">{inquiry.phone}</div>
+                            )}
+                          </td>
+                          <td className="p-4">
+                            <div className="text-foreground capitalize">{inquiry.projectType || "-"}</div>
+                            <div className="text-sm text-muted-foreground">{inquiry.budget || "-"}</div>
+                          </td>
+                          <td className="p-4">
+                            <Select
+                              value={inquiry.status}
+                              onValueChange={(value: "new" | "contacted" | "quoted" | "converted" | "closed") => updateStatus.mutate({ id: inquiry.id, status: value })}
+                              disabled={updateStatus.isPending}
+                            >
+                              <SelectTrigger className="w-[130px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="new">New</SelectItem>
+                                <SelectItem value="contacted">Contacted</SelectItem>
+                                <SelectItem value="quoted">Quoted</SelectItem>
+                                <SelectItem value="converted">Converted</SelectItem>
+                                <SelectItem value="closed">Closed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-4 text-muted-foreground">
+                            {new Date(inquiry.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedInquiry(inquiry)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <a href={`mailto:${inquiry.email}`}>
+                                <Button variant="ghost" size="sm">
+                                  <Mail className="w-4 h-4" />
+                                </Button>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="p-12 text-center">
                 <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

@@ -244,19 +244,19 @@ export default function AdminContent() {
         </Button>
       </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="space-y-2">
+        <div className="grid lg:grid-cols-4 gap-4 md:gap-8">
+          {/* Sidebar - horizontal scroll on mobile, vertical on desktop */}
+          <div className="lg:space-y-2 flex lg:flex-col overflow-x-auto lg:overflow-x-visible gap-2 lg:gap-0 pb-2 lg:pb-0 -mx-3 px-3 lg:mx-0 lg:px-0">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all admin-sidebar-item ${
+                className={`flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg text-left transition-all admin-sidebar-item whitespace-nowrap shrink-0 lg:shrink lg:w-full ${
                   activeSection === section.id ? "active" : ""
                 }`}
               >
-                <section.icon className="w-5 h-5" />
-                <span className="font-medium">{section.label}</span>
+                <section.icon className="w-4 h-4 lg:w-5 lg:h-5" />
+                <span className="font-medium text-sm lg:text-base">{section.label}</span>
               </button>
             ))}
           </div>

@@ -102,86 +102,148 @@ export default function AdminSubcontractors() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
               </div>
             ) : filteredSubcontractors.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-secondary/50">
-                    <tr>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Company</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Contact</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Specialty</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
-                      <th className="text-left p-4 font-medium text-muted-foreground">Documents</th>
-                      <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredSubcontractors.map((sub: any) => (
-                      <tr key={sub.id} className="border-t">
-                        <td className="p-4">
-                          <div className="font-medium text-foreground">{sub.companyName}</div>
-                          <div className="text-sm text-muted-foreground">{sub.email}</div>
-                        </td>
-                        <td className="p-4">
-                          <div className="text-foreground">{sub.contactName}</div>
-                          <div className="text-sm text-muted-foreground">{sub.phone}</div>
-                        </td>
-                        <td className="p-4">
-                          <span className="capitalize text-foreground">{sub.specialty || "-"}</span>
-                        </td>
-                        <td className="p-4">
-                          <Select
-                            value={sub.status}
-                            onValueChange={(value: "pending" | "approved" | "rejected") => updateStatus.mutate({ id: sub.id, status: value })}
-                          >
-                            <SelectTrigger className="w-[130px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="approved">Approved</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex gap-2">
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3 p-3">
+                  {filteredSubcontractors.map((sub: any) => (
+                    <div key={sub.id} className="bg-white rounded-xl border p-3 shadow-sm space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="font-medium text-foreground truncate">{sub.companyName}</div>
+                          <div className="text-sm text-muted-foreground truncate">{sub.contactName}</div>
+                          <div className="text-sm text-muted-foreground truncate">{sub.email}</div>
+                          {sub.phone && <div className="text-sm text-muted-foreground">{sub.phone}</div>}
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedSubcontractor(sub)}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <a href={`mailto:${sub.email}`}>
+                            <Button variant="ghost" size="sm">
+                              <Mail className="w-4 h-4" />
+                            </Button>
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="capitalize text-foreground">{sub.specialty || "No specialty"}</span>
+                        {(sub.licenseUrl || sub.insuranceUrl) && (
+                          <>
+                            <span className="text-muted-foreground">·</span>
                             {sub.licenseUrl && (
-                              <a href={sub.licenseUrl} target="_blank" rel="noopener noreferrer">
-                                <Button variant="ghost" size="sm" title="License">
-                                  <FileText className="w-4 h-4" />
-                                </Button>
+                              <a href={sub.licenseUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                                <FileText className="w-3 h-3" /> License
                               </a>
                             )}
                             {sub.insuranceUrl && (
-                              <a href={sub.insuranceUrl} target="_blank" rel="noopener noreferrer">
-                                <Button variant="ghost" size="sm" title="Insurance">
-                                  <FileText className="w-4 h-4" />
-                                </Button>
+                              <a href={sub.insuranceUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                                <FileText className="w-3 h-3" /> Insurance
                               </a>
                             )}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedSubcontractor(sub)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <a href={`mailto:${sub.email}`}>
-                              <Button variant="ghost" size="sm">
-                                <Mail className="w-4 h-4" />
-                              </Button>
-                            </a>
-                          </div>
-                        </td>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <Select
+                          value={sub.status}
+                          onValueChange={(value: "pending" | "approved" | "rejected") => updateStatus.mutate({ id: sub.id, status: value })}
+                        >
+                          <SelectTrigger className="w-[130px] h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="approved">Approved</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-secondary/50">
+                      <tr>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Company</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Contact</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Specialty</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+                        <th className="text-left p-4 font-medium text-muted-foreground">Documents</th>
+                        <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {filteredSubcontractors.map((sub: any) => (
+                        <tr key={sub.id} className="border-t">
+                          <td className="p-4">
+                            <div className="font-medium text-foreground">{sub.companyName}</div>
+                            <div className="text-sm text-muted-foreground">{sub.email}</div>
+                          </td>
+                          <td className="p-4">
+                            <div className="text-foreground">{sub.contactName}</div>
+                            <div className="text-sm text-muted-foreground">{sub.phone}</div>
+                          </td>
+                          <td className="p-4">
+                            <span className="capitalize text-foreground">{sub.specialty || "-"}</span>
+                          </td>
+                          <td className="p-4">
+                            <Select
+                              value={sub.status}
+                              onValueChange={(value: "pending" | "approved" | "rejected") => updateStatus.mutate({ id: sub.id, status: value })}
+                            >
+                              <SelectTrigger className="w-[130px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="approved">Approved</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex gap-2">
+                              {sub.licenseUrl && (
+                                <a href={sub.licenseUrl} target="_blank" rel="noopener noreferrer">
+                                  <Button variant="ghost" size="sm" title="License">
+                                    <FileText className="w-4 h-4" />
+                                  </Button>
+                                </a>
+                              )}
+                              {sub.insuranceUrl && (
+                                <a href={sub.insuranceUrl} target="_blank" rel="noopener noreferrer">
+                                  <Button variant="ghost" size="sm" title="Insurance">
+                                    <FileText className="w-4 h-4" />
+                                  </Button>
+                                </a>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setSelectedSubcontractor(sub)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <a href={`mailto:${sub.email}`}>
+                                <Button variant="ghost" size="sm">
+                                  <Mail className="w-4 h-4" />
+                                </Button>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="p-12 text-center">
                 <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
