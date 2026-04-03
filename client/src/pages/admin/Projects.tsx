@@ -208,13 +208,15 @@ export default function AdminProjects() {
               Add Project
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto admin-card">
-            <DialogHeader className="admin-card-header -m-6 mb-6 p-6">
+          <DialogContent className="max-w-2xl h-[95vh] md:h-auto md:max-h-[90vh] flex flex-col admin-card">
+            <DialogHeader className="admin-card-header -m-6 mb-4 p-4 md:p-6 shrink-0">
               <DialogTitle className="admin-card-title">
                 {editingProject ? "Edit Project" : "Add New Project"}
               </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6 p-1">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 p-1 overflow-y-auto flex-1"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="admin-label">Title *</Label>
@@ -358,10 +360,10 @@ export default function AdminProjects() {
                 <Label className="admin-label">Featured Project</Label>
               </div>
 
-              <div className="flex justify-end gap-4 pt-4 border-t">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+              <div className="flex justify-end gap-3 pt-4 border-t sticky bottom-0 bg-white pb-2">
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => setIsDialogOpen(false)}
                   className="admin-button-secondary"
                 >
