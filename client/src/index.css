@@ -575,6 +575,85 @@ img[src*=".jpg"], img[src*=".jpeg"] {
   margin-bottom: 2rem;
 }
 
+/* ===== ADMIN MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .admin-main-content {
+    padding: 1rem 0;
+  }
+
+  .admin-main-content .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .admin-page-title {
+    font-size: 1.5rem;
+  }
+
+  .admin-page-description {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .admin-card-header {
+    padding: 1rem;
+  }
+
+  .admin-card-title {
+    font-size: 1rem;
+  }
+
+  .admin-card-content {
+    padding: 1rem;
+  }
+
+  .admin-card:hover {
+    transform: none;
+  }
+
+  /* Fix tables on mobile */
+  .admin-layout table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.8rem;
+  }
+
+  .admin-layout table th,
+  .admin-layout table td {
+    padding: 0.5rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  /* Stack grid items on mobile */
+  .admin-layout .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-layout .grid.sm\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Fix form inputs on mobile */
+  .admin-layout input,
+  .admin-layout textarea,
+  .admin-layout select {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+
+  /* Fix buttons row on mobile */
+  .admin-layout .flex.gap-2,
+  .admin-layout .flex.gap-3,
+  .admin-layout .flex.gap-4 {
+    flex-wrap: wrap;
+  }
+
+  /* Image upload area smaller on mobile */
+  .admin-layout .aspect-video {
+    max-width: 100%;
+  }
+}
+
 /* Admin Cards and Components */
 .admin-card {
   background: white;
@@ -582,6 +661,8 @@ img[src*=".jpg"], img[src*=".jpeg"] {
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 .admin-card:hover {
